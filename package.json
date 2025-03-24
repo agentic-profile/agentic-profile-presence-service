@@ -1,0 +1,40 @@
+{
+  "name": "agentic-profile-presence-service",
+  "version": "0.2.0",
+  "description": "Accepts presence notifications and signals to agents when they are nearby",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx ts-node-dev --respawn --transpile-only index.local.js",
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agentic-profile/agentic-profile-presence-service.git"
+  },
+  "author": "Mike Prince",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/agentic-profile/agentic-profile-presence-service/issues"
+  },
+  "homepage": "https://github.com/agentic-profile/agentic-profile-presence-service#readme",
+  "dependencies": {
+    "@agentic-profile/auth": "^0.3.0",
+    "@agentic-profile/common": "^0.2.4",
+    "@aws-sdk/client-s3": "^3.772.0",
+    "@codegenie/serverless-express": "^4.15.0",
+    "axios": "^1.8.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/morgan": "^1.9.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}
