@@ -3,13 +3,13 @@
 Accepts presence notifications and signals to agents when they are nearby.
 
 
-## Quickstart
+## Quickstart with Local Server
 
 1. Ensure you have a beta account for testing
 
 	$ node test/setup-beta-profile
 
-2. Start the serivce locally
+2. Start the service locally
 
 	$ yarn start
 
@@ -32,6 +32,29 @@ Accepts presence notifications and signals to agents when they are nearby.
 6. Use the agent authorization token (session key) to authenticate and generate a chat reply
 
     $ node test/share-location -i &lt;id from step 5&gt; -s &lt;secret from step 4&gt;
+
+    For example:
+
+    node test/share-location -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+
+
+## Testing the Cloud Hosted Presence Service
+
+1. Ensure the service is running.  In this example we will use the service at https://presence.agenticprofile.ai
+
+2. Ensure you have a local "beta" profile created
+
+	$ node test/setup-beta-profile
+
+3. Try to communicate with the presence service
+
+	$ curl -X PUT https://presence.agenticprofile.ai/locations
+
+4. Use an agent authorization token to authenticate and generate a chat reply
+
+	Use the challenge "id" and "secret" returned from the server during step #3.
+
+    $ node test/share-location -i &lt;id from step 3&gt; -s &lt;secret from step 3&gt;
 
     For example:
 

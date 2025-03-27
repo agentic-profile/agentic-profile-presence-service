@@ -144,17 +144,14 @@ export function parseArgs({args, options}) {
 
         // Check if next is a negative number (int or float)
         const isNegativeNumber = /^-\d+(\.\d+)?$/.test(next);
-        console.log( 'isNeg', isNegativeNumber, next );
 
         // If current is a short option like -x and next is a negative number, combine
         if (/^-[a-zA-Z]$/.test(current) && isNegativeNumber ) {
-            console.log( 'combining' );
             const key = current[1];
             const optionName = optionShortToKey[key];
             if (options[optionName]?.type === "string") {
                 normalized.push(`${current}=${next}`);
                 i++; // skip next, already used
-                console.log( 'normalized', normalized );
                 continue;
             }
         }

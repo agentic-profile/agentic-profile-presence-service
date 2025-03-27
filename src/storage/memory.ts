@@ -9,7 +9,7 @@ import {
     Storage,
     VerificationMethodRecord
 } from "./models.js";
-import { Geocoordinates } from "./../models.js";
+import { Geocoordinates } from "../models.js";
 
 let nextSessionId = 1;
 const clientSessionMap = new Map<number,ClientAgentSession>();
