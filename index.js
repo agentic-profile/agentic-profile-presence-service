@@ -7,13 +7,12 @@ import { setAgentHooks } from "@agentic-profile/common";
 import { app } from "@agentic-profile/express-common";
 
 import { routes } from "./dist/routes.js";
-//import { MySQLStorage } from "./dist/storage/mysql/database.js";
-import { InMemoryStorage } from "./dist/storage/memory.js";
+import { MySQLStorage } from "./dist/storage/mysql/database.js";
 
 const port = process.env.PORT || 3003;
 const TESTING_DID_PATH = `web:localhost%3A${port}:iam`;
 setAgentHooks({
-    storage: new InMemoryStorage(),
+    storage: new MySQLStorage(),
     createUserAgentDid: (uid) => `did:${process.env.AP_DID_PATH ?? TESTING_DID_PATH}:${uid}`
 });
 
