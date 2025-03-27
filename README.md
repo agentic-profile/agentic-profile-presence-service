@@ -23,19 +23,19 @@ Accepts presence notifications and signals to agents when they are nearby.
         "type": "agentic-challenge/0.3",
         "challenge": {
             "id": 1,
-            "random": "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+            "secret": "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
         }
     }
 
-    NOTE: Copy the "id" and "random" from your server's response for the next step.  In the above example the id is "1" and the random is "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+    NOTE: Copy the "id" and "secret" from your server's response for the next step.  In the above example the id is "1" and the secret is "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
 
 6. Use the agent authorization token (session key) to authenticate and generate a chat reply
 
-    $ node test/share-location &lt;id from step 5&gt; &lt;random from step 4&gt;
+    $ node test/share-location -i &lt;id from step 5&gt; -s &lt;secret from step 4&gt;
 
     For example:
 
-    node test/share-location 1 "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+    node test/share-location -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
 
 
 

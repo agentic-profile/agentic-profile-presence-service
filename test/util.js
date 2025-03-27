@@ -7,6 +7,7 @@ import {
     logAxiosResult,
     prettyJSON
 } from "@agentic-profile/express-common";
+import { parseArgs as nodeParseArgs } from "util";
 import { fileURLToPath } from "url";
 import { dirname, join, sep } from "path";
 import { readFile, mkdir, writeFile } from "fs/promises";
@@ -35,7 +36,7 @@ export async function createAgenticProfile( serviceEndpoint ) {
         service:[
             {
                 id: "#agent-presence",
-                type: "Agentic/Presence",
+                type: "Agentic/presence",
                 serviceEndpoint,
                 capabilityInvocation: [
                     verificationMethod
@@ -47,7 +48,7 @@ export async function createAgenticProfile( serviceEndpoint ) {
     return { profile, jwk };
 }
 
-function argvToCommand(argv) {
+export function argvToCommand(argv) {
     const program = argv[0].split( sep ).at(-1);
     const script = argv[1].split( sep ).slice(-2).join( sep );
 
@@ -55,35 +56,27 @@ function argvToCommand(argv) {
 }
 
 export async function putAgenticPayload({
-    argv,
+    type,
+    challenge,
     profileDir,     // to load our private keys
     peerAgentUrl,   // `http://localhost:${port}/users/2/agent-chats`
     payload
 }) {
-    if( argv.length < 4 ) {
-        const command = argvToCommand(argv);
-        console.log( `Please provide the challenge 'id' and 'random' from the agent service, such as:\n    ${command} 1 ffgf6sdf76sdf76sdf`);
-        return;
-    }
-    const id = Number(argv[2].trim());
-    const random = argv[3].trim();
-
     const { profile, keyring } = await loadProfile( profileDir );
     const { privateJwk } = keyring[0];
 
-    // Authenticating with an agent of user 2 on localhost
     const agenticChallenge = {
-        challenge: { id, random }
+        challenge
     };
 
-    const agentDid = `${profile.id}#agent-presence`;
+    const agentDid = `${profile.id}#agent-${type}`;
     const attestation = {
         agentDid,
-        verificationId: "#agent-presence-key-0" 
+        verificationId: `#agent-${type}-key-0` 
     }
 
     const authToken = await signChallenge({ agenticChallenge, attestation, privateJwk });
-    console.log( "\nCreated agent authorization token:", authToken );
+    console.log( "\nCreated agent authorization token:", authToken, agenticChallenge );
 
     const auth = {
         headers: {
@@ -133,4 +126,40 @@ export async function loadProfile( dir ) {
     const keyring = JSON.parse( buffer );
 
     return { profile, keyring };
+}
+
+//
+// Utility
+// 
+
+export function parseArgs({args, options}) {
+    const optionShortToKey = Object.fromEntries(
+        Object.entries(options).map(([key, opt]) => [opt.short, key])
+    );
+
+    const normalized = [];
+    for (let i = 0; i < args.length; i++) {
+        const current = args[i];
+        const next = args[i + 1];
+
+        // Check if next is a negative number (int or float)
+        const isNegativeNumber = /^-\d+(\.\d+)?$/.test(next);
+        console.log( 'isNeg', isNegativeNumber, next );
+
+        // If current is a short option like -x and next is a negative number, combine
+        if (/^-[a-zA-Z]$/.test(current) && isNegativeNumber ) {
+            console.log( 'combining' );
+            const key = current[1];
+            const optionName = optionShortToKey[key];
+            if (options[optionName]?.type === "string") {
+                normalized.push(`${current}=${next}`);
+                i++; // skip next, already used
+                console.log( 'normalized', normalized );
+                continue;
+            }
+        }
+        normalized.push(current);
+    }
+
+    return nodeParseArgs({ args: normalized, options });
 }
