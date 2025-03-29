@@ -54,11 +54,11 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 	Use the challenge "id" and "secret" returned from the server during step #3.
 
-    $ node test/share-location -i &lt;id from step 3&gt; -s &lt;secret from step 3&gt;
+    $ node test/share-location -a https://presence.agenticprofile.ai/locations -i &lt;id from step 3&gt; -s &lt;secret from step 3&gt;
 
     For example:
 
-    node test/share-location -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+    node test/share-location -a https://presence.agenticprofile.ai/locations -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw" 
 
 
 

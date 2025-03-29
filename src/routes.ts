@@ -2,13 +2,13 @@ import express, { Request, Response } from "express";
 
 import {
     agentHooks,
-    CommonHooks
+    CommonHooks,
+    prettyJSON
 } from "@agentic-profile/common";
 import {
     asyncHandler,
     baseUrl,
     isAdmin,
-    prettyJSON,
     resolveAgentSession
 } from "@agentic-profile/express-common";
 

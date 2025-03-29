@@ -1,9 +1,10 @@
 import { join } from "path";
 import os from "os";
 import {
-    parseArgs,
-    putAgenticPayload
-} from "./util.js";
+    argv,
+    sendAgenticPayload
+} from "@agentic-profile/express-common";
+import { prettyJSON } from "@agentic-profile/common";
 
 
 const ARGV_OPTIONS = {
@@ -36,7 +37,7 @@ const ARGV_OPTIONS = {
 (async ()=>{
     const port = process.env.PORT || 3003;
 
-    const { values } = parseArgs({
+    const { values } = argv.parseArgs({
         args: process.argv.slice(2),
         options: ARGV_OPTIONS
     });
@@ -56,7 +57,7 @@ const ARGV_OPTIONS = {
         return;
     }*/
 
-    await putAgenticPayload({
+    const response = await sendAgenticPayload({
         type,
         challenge: { id, secret },
         profileDir: join( os.homedir(), ".agentic", "iam", "beta" ),
@@ -66,4 +67,11 @@ const ARGV_OPTIONS = {
             broadcast
         }
     });
+
+    if( !response.ok )
+        console.log(`ERROR: Sharing failed: ${response.status}`);
+    else {
+        const result = await response.json();
+        console.log( `Result: ${prettyJSON(result)}` );
+    }
 })();
