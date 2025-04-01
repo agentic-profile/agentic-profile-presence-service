@@ -1,6 +1,6 @@
 {
   "name": "agentic-profile-presence-service",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Accepts presence notifications and signals to agents when they are nearby",
   "main": "index.js",
   "scripts": {
