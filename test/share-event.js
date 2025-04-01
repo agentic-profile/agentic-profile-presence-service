@@ -60,7 +60,7 @@ const ARGV_OPTIONS = {
     const response = await sendAgenticPayload({
         type,
         challenge: { id, secret },
-        profileDir: join( os.homedir(), ".agentic", "iam", "beta" ),
+        profileDir: join( os.homedir(), ".agentic", "iam", "global-me" ),
         peerAgentUrl,
         payload: {
             eventUrl,

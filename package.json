@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/agentic-profile/agentic-profile-presence-service#readme",
   "dependencies": {
-    "@agentic-profile/express-common": "^0.4.2",
+    "@agentic-profile/express-common": "^0.4.3",
     "@codegenie/serverless-express": "^4.15.0",
     "dotenv": "^16.4.7"
   },

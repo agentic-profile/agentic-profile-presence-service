@@ -1,7 +1,4 @@
-import {
-    agentHooks,
-    DID
-} from "@agentic-profile/common";
+import { DID } from "@agentic-profile/common";
 import { ServerError } from "@agentic-profile/express-common";
 
 import {
@@ -14,7 +11,7 @@ import {
 
 export async function saveEvent( did: DID, update: AgenticEventUpdate ) {
     did = removeFragment( did );
-    const { eventUrl, broadcast } = update;
+    const { eventUrl } = update;
 
     if( !eventUrl )
         throw new ServerError([4],"Missing required 'eventUrl' property");

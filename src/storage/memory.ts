@@ -1,5 +1,4 @@
 import { DID } from "@agentic-profile/common";
-import { ServerError } from "@agentic-profile/express-common";
 import {
     ClientAgentSession,
     ClientAgentSessionUpdates

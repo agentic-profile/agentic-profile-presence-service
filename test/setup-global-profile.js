@@ -8,31 +8,32 @@ import {
 } from "@agentic-profile/common";
 import {
     createAgenticProfile,
+    fetchJson,
+    resolvePublicKey,
     saveProfile
 } from "@agentic-profile/express-common";
 
 
 (async ()=>{
 
-    const { profile, keyring } = await createAgenticProfile({ services: [
-        { type: "presence", url: "https://agents.matchwise.ai/users/2/presence" }
-    ]});
-    const b64uPublicKey = profile.verificationMethod[0].publicKeyJwk.x;
+    const services = [
+        {
+            type: "presence",
+            url: `https://agents.matchwise.ai/users/*/presence`
+        }
+    ];
+    const { profile, keyring } = await createAgenticProfile({ services });
+    const b64uPublicKey = resolvePublicKey( profile );
 
     let savedProfile;
     try {
     	// publish profile to web (so did:web:... will resolve)
-        const response = await fetch( "https://testing.agenticprofile.ai/agentic-profile", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ profile, b64uPublicKey })
-        });
-        if( !response.ok )
-            throw new Error(`Failed to publish profile ${response.status}`);
-        ({ profile: savedProfile } = await response.json());
+        let { data } = await fetchJson(
+            "https://testing.agenticprofile.ai/agentic-profile",
+            { profile, b64uPublicKey }
+        );
+        console.log( 'data', data );
+        savedProfile = data.profile;
         const did = savedProfile.id;
         console.log( `Published agentic profile to:
 
@@ -49,7 +50,7 @@ Or via DID at:
 
     try {
         // also save locally as "beta" for testing
-        const dir = join( os.homedir(), ".agentic", "iam", "beta" );
+        const dir = join( os.homedir(), ".agentic", "iam", "global-me" );
         await saveProfile({ dir, profile: savedProfile, keyring });
     } catch(error) {
     	console.log( "Failed to save profile", error );

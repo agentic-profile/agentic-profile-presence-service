@@ -8,8 +8,7 @@ import { mysql } from "@agentic-profile/express-common";
 const {
     queryFirstRow,
     queryResult,
-    queryRows,
-    updateDB
+    queryRows
 } = mysql;
 
 import {

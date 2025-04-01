@@ -55,19 +55,18 @@ const ARGV_OPTIONS = {
     const id = Number( values.id );
     const coords = asCoords( latitude, longitude );
 
-    const response = await sendAgenticPayload({
-        type,
-        challenge: { id, secret },
-        profileDir: join( os.homedir(), ".agentic", "iam", "beta" ),
-        peerAgentUrl,
-        payload: { coords }
-    });
+    try {
+        const { data } = await sendAgenticPayload({
+            type,
+            challenge: { id, secret },
+            profileDir: join( os.homedir(), ".agentic", "iam", "global-me" ),
+            peerAgentUrl,
+            payload: { coords }
+        });
 
-    if( !response.ok )
-        console.log(`ERROR: Sharing failed: ${response.status}`);
-    else {
-        const result = await response.json();
-        console.log( `Result: ${prettyJSON(result)}` );
+        console.log(`Sharing result: ${prettyJSON(data)}`);
+    } catch( err ) {
+        console.log( `Sharing failed: ${err}` );
     }
 })();
 
