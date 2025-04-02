@@ -8,7 +8,11 @@ import {
     Storage,
     VerificationMethodRecord
 } from "./models.js";
-import { Geocoordinates } from "../models.js";
+import {
+    Geocoordinates,
+    LocationQuery,
+    NearbyAgent
+} from "../models.js";
 
 let nextSessionId = 1;
 const clientSessionMap = new Map<number,ClientAgentSession>();
@@ -69,16 +73,15 @@ export class InMemoryStorage implements Storage {
         agentLocationMap.set( did, { coords, created: new Date() } );
     }
 
-    async findNearbyAgents( coords: Geocoordinates, withinMeters: number, maxAgeMinutes?: number ): Promise<DID[]> {
+    async findNearbyAgents( coords: Geocoordinates, query: LocationQuery ): Promise<NearbyAgent[]> {
+        const { maxAge, withinMeters } = query;  // maxAge in minutes
         return [...agentLocationMap.entries()]
-            .filter(([key,e])=>{
-                if( !!maxAgeMinutes && e.created.getTime() + ( maxAgeMinutes * 60000 ) < Date.now() )
-                    return false;   // too old
-
-                const distance = getDistanceInMeters( coords, e.coords );
-                return distance <= withinMeters;
-            })
-            .map(([key])=>key);  
+            .map(([key,e])=>({
+                did: key,
+                updated: e.created,
+                distance: isTooOld( e.created, maxAge ) ? -1 : getDistanceInMeters( coords, e.coords )
+            }))
+            .filter(e=>e.distance !== -1 && e.distance <= withinMeters); 
     }
 
     //
@@ -124,6 +127,13 @@ export class InMemoryStorage implements Storage {
     }
 }
 
+// maxAge in minutes
+function isTooOld( created: Date, maxAge: number | undefined ) {
+    if( !maxAge )
+        return false;
+    else
+        return created.getTime() + ( maxAge * 60000 ) < Date.now();
+}
 
 //
 // Distance

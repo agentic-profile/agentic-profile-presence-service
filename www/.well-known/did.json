@@ -1,0 +1,58 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/did/v1",
+        "https://w3id.org/security/suites/jws-2020/v1",
+        "https://iamagentic.org/ns/agentic-profile/v1"
+    ],
+    "id": "did:web:presence.p2pagentic.ai",
+    "verificationMethod": [
+        {
+            "id": "#general-key-0",
+            "type": "JsonWebKey2020",
+            "publicKeyJwk": {
+                "kty": "OKP",
+                "alg": "EdDSA",
+                "crv": "Ed25519",
+                "x": "NzV2c7gN16YjrQ8e1v71W6at44cc4kL-paVHCVD0iyo"
+            }
+        }
+    ],
+    "service": [
+        {
+            "name": "presence-location agent",
+            "id": "#agent-presence-location",
+            "type": "Agentic/presence-location",
+            "serviceEndpoint": "https://presence.p2pagentic.ai/locations",
+            "capabilityInvocation": [
+                {
+                    "id": "#agent-presence-location-key-0",
+                    "type": "JsonWebKey2020",
+                    "publicKeyJwk": {
+                        "kty": "OKP",
+                        "alg": "EdDSA",
+                        "crv": "Ed25519",
+                        "x": "kp8hp1KeRWG8q6uOPdfbZwuTjf3HKoCkpGG2PwVmOUs"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "presence-event agent",
+            "id": "#agent-presence-event",
+            "type": "Agentic/presence-event",
+            "serviceEndpoint": "https://presence.p2pagentic.ai/events",
+            "capabilityInvocation": [
+                {
+                    "id": "#agent-presence-event-key-0",
+                    "type": "JsonWebKey2020",
+                    "publicKeyJwk": {
+                        "kty": "OKP",
+                        "alg": "EdDSA",
+                        "crv": "Ed25519",
+                        "x": "pPPlnrBSGrUApzakVFrx2F44xtyu5dgBjoDd4VywVkg"
+                    }
+                }
+            ]
+        }
+    ]
+}

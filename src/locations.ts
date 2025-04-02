@@ -1,5 +1,8 @@
 import { DID } from "@agentic-profile/common";
-import { AgenticLocationUpdate } from "./models.js";
+import {
+    AgenticLocationUpdate,
+    NearbyAgent
+} from "./models.js";
 import {
     removeFragment,
     storage
@@ -8,8 +11,12 @@ import {
 
 export async function saveLocation( did: DID, update: AgenticLocationUpdate ) {
     did = removeFragment( did );
-    const { coords } = update;
+    const { coords, query } = update;
     await storage().updateAgentLocation( did, coords );
 
-    return { did, coords, broadcastResults: [] };
+    let nearby: undefined | NearbyAgent[] = undefined;
+    if( query )
+        nearby = await storage().findNearbyAgents( coords, query );
+
+    return { did, coords, nearby, broadcastResults: [] };
 }

@@ -61,7 +61,10 @@ const ARGV_OPTIONS = {
             challenge: { id, secret },
             profileDir: join( os.homedir(), ".agentic", "iam", "global-me" ),
             peerAgentUrl,
-            payload: { coords }
+            payload: {
+                coords,
+                query: { withinMeters: 100 }
+            }
         });
 
         console.log(`Sharing result: ${prettyJSON(data)}`);

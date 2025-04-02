@@ -5,7 +5,11 @@ import {
 } from "@agentic-profile/auth";
 import { DID } from "@agentic-profile/common";
 
-import { Geocoordinates } from "../models.js";
+import {
+    Geocoordinates,
+    NearbyAgent,
+    LocationQuery
+} from "../models.js";
 
 export interface VerificationMethodRecord {
     id: string,
@@ -21,7 +25,7 @@ export interface Storage extends ClientAgentSessionStorage {
     removeVerificationMethod: ( id:string )=>Promise<void>,
 
     updateAgentLocation: ( did: DID, coords: Geocoordinates )=>Promise<void>,
-    findNearbyAgents: ( coords: Geocoordinates, withinMeters: number, maxAgeMinutes?: number )=>Promise<DID[]>,
+    findNearbyAgents: ( coords: Geocoordinates, query: LocationQuery )=>Promise<NearbyAgent[]>,
 
     addAgentEvent: ( did: DID, eventUrl: string )=>Promise<void>,
     listEventAgents: ( eventUrl: string )=>Promise<DID[]>,

@@ -14,6 +14,7 @@ echo "Creating upload zipfile..."
 rm function.zip 
 zip -r function.zip \
     package.json \
+    keyring.json \
     index.js \
     dist/* \
     www/* \

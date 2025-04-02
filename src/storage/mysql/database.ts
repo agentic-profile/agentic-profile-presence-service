@@ -15,7 +15,11 @@ import {
     Storage,
     VerificationMethodRecord
 } from "../models.js";
-import { Geocoordinates } from "../../models.js";
+import {
+    Geocoordinates,
+    LocationQuery,
+    NearbyAgent
+} from "../../models.js";
 
 export class MySQLStorage implements Storage {
 
@@ -53,22 +57,37 @@ export class MySQLStorage implements Storage {
         );
     }
 
-    async findNearbyAgents( coords: Geocoordinates, withinMeters: number, maxAgeMinutes?: number ): Promise<DID[]> {
+    async findNearbyAgents( coords: Geocoordinates, query: LocationQuery ): Promise<NearbyAgent[]> {
         const { latitude, longitude } = coords;
+        const { maxAge, withinMeters } = query;  // maxAge in minutes
 
         let sql = `
-            SELECT did FROM agent_coords
-            WHERE ST_Distance_Sphere(coords, POINT(?, ?)) <= ?
+WITH distances AS (
+    SELECT 
+        did, 
+        updated, 
+        ST_Distance_Sphere(coords, POINT(?, ?)) AS distance
+    FROM 
+        agent_coords
+)
+SELECT 
+    did, 
+    updated, 
+    distance
+FROM 
+    distances
+WHERE 
+    distance <= ?
         `;
         const params: any[] = [longitude, latitude, withinMeters];
 
-        if (maxAgeMinutes !== undefined) {
+        if (maxAge !== undefined) {
             sql += ` AND updated >= NOW() - INTERVAL ? MINUTE`;
-            params.push(maxAgeMinutes);
+            params.push(maxAge);
         }
 
         const rows = await queryRows(sql, params);
-        return rows.map((row: any) => row.did);
+        return rows.map(({ did, distance, updated }: any) => ({ did, distance, updated }));
     }
 
     //
