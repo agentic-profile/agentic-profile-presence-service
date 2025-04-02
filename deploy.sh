@@ -18,6 +18,7 @@ zip -r function.zip \
     index.js \
     dist/* \
     www/* \
+    www/.well-known/* \
     node_modules/* --exclude 'node_modules/@aws-sdk/*'
 
 echo "Deploying to Lambda..."
