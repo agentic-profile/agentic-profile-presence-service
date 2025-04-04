@@ -3,12 +3,15 @@ import 'dotenv/config';
 import os from "os";
 import { join } from "path";
 import {
-    prettyJSON,
+    createEdDsaJwk,
+    postJson
+} from "@agentic-profile/auth";
+import {
+    createAgenticProfile,
+    prettyJson,
     webDidToUrl
 } from "@agentic-profile/common";
 import {
-    createAgenticProfile,
-    fetchJson,
     saveProfile
 } from "@agentic-profile/express-common";
 
@@ -17,20 +20,23 @@ import {
 
     const services = [
         {
-            type: "presence",
+            subtype: "presence",
             url: `https://agents.matchwise.ai/users/*/presence`
         }
     ];
-    const { profile, keyring, b64uPublicKey } = await createAgenticProfile({ services });
+    const { profile, keyring, b64uPublicKey } = await createAgenticProfile({
+        services,
+        createJwk: createEdDsaJwk 
+    });
 
     let savedProfile;
     try {
     	// publish profile to web (so did:web:... will resolve)
-        let { data } = await fetchJson(
+        let { data } = await postJson(
             "https://testing.agenticprofile.ai/agentic-profile",
             { profile, b64uPublicKey }
         );
-        console.log( 'data', data );
+        console.log( 'Agentic Profile', prettyJson(data) );
         savedProfile = data.profile;
         const did = savedProfile.id;
         console.log( `Published agentic profile to:

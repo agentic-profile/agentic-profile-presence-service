@@ -1,9 +1,9 @@
+import { ClientAgentSessionStorage } from "@agentic-profile/auth";
 import {
-    ClientAgentSessionStorage,
+    DID,
     EdDSAPrivateJWK,
     EdDSAPublicJWK
-} from "@agentic-profile/auth";
-import { DID } from "@agentic-profile/common";
+} from "@agentic-profile/common";
 
 import {
     Geocoordinates,

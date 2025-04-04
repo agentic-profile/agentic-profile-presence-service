@@ -1,13 +1,13 @@
-import { DID } from "@agentic-profile/common";
+import {
+    DID,
+    removeFragment
+} from "@agentic-profile/common";
 import { ServerError } from "@agentic-profile/express-common";
 
 import {
     AgenticEventsUpdate,
 } from "./models.js";
-import {
-    removeFragment,
-    storage
-} from "./util.js";
+import { storage } from "./util.js";
 
 export async function saveEvents( did: DID, update: AgenticEventsUpdate ) {
     did = removeFragment( did );

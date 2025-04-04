@@ -1,19 +1,22 @@
 import { join } from "path";
 import os from "os";
+import { prettyJson } from "@agentic-profile/common";
+import {
+    resolveVerificationKey,
+    sendAgenticPayload,
+    signChallenge
+} from "@agentic-profile/auth";
 import {
     argv,
-    sendAgenticPayload
+    generateAuthToken,
+    loadProfileAndKeyring
 } from "@agentic-profile/express-common";
-import { prettyJSON } from "@agentic-profile/common";
+
 
 const ARGV_OPTIONS = {
     broadcast: {
         type: "boolean",
         short: "B"
-    },
-    id: {
-        type: "string",
-        short: "i"
     },
     latitude: {
         type: "string",
@@ -26,14 +29,6 @@ const ARGV_OPTIONS = {
     peerAgentUrl: {
         type: "string",
         short: "a"
-    },
-    secret: {
-        type: "string",
-        short: "s"
-    },
-    type: {
-        type: "string",
-        short: "t"
     }
 };
 
@@ -45,37 +40,43 @@ const ARGV_OPTIONS = {
         options: ARGV_OPTIONS
     });
     const {
-        type = "presence",
-        secret,
         broadcast = false,
-        peerAgentUrl = `http://localhost:${port}/locations`,
         latitude,
-        longitude
+        longitude,
+        peerAgentUrl = `http://localhost:${port}/presence`
     } = values;
-    const id = Number( values.id );
     const coords = asCoords( latitude, longitude );
 
     try {
-        const { data } = await sendAgenticPayload({
-            type,
-            challenge: { id, secret },
-            profileDir: join( os.homedir(), ".agentic", "iam", "global-me" ),
-            peerAgentUrl,
-            payload: {
+        const payload = {
+            location: {
+                broadcast,
                 coords,
                 query: { withinMeters: 100 }
             }
+        };
+
+        const { data } = await sendAgenticPayload({ 
+            url: peerAgentUrl, 
+            payload,
+            resolveAuthToken: async ( agenticChallenge ) => {
+                return generateAuthToken({
+                    agentSubtype: "presence",
+                    agenticChallenge,
+                    profileDir: join( os.homedir(), ".agentic", "iam", "global-me" )
+                })
+            }
         });
 
-        console.log(`Sharing result: ${prettyJSON(data)}`);
+        console.log(`Sharing result: ${prettyJson(data)}`);
     } catch( err ) {
-        console.log( `Sharing failed: ${err}` );
+        console.log(`Sharing failed: ${err}` );
     }
 })();
 
 function asCoords( latitude, longitude ) {
     if( latitude === undefined && longitude === undefined )
-        return { latitude: 37.334220, longitude: -122.110294 };
+        return { latitude: 37.334220, longitude: -122.110294 }; // Some defaults
     else return {
         latitude: asNumber( latitude ),
         longitude: asNumber( longitude )

@@ -1,12 +1,12 @@
-import { DID } from "@agentic-profile/common";
+import { 
+    DID, 
+    removeFragment
+} from "@agentic-profile/common";
 import {
     AgenticLocationUpdate,
     NearbyAgent
 } from "./models.js";
-import {
-    removeFragment,
-    storage
-} from "./util.js";
+import { storage } from "./util.js";
 
 
 export async function saveLocation( did: DID, update: AgenticLocationUpdate ) {

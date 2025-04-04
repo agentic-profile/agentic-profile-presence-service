@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 import {
     agentHooks,
     CommonHooks,
-    prettyJSON
+    prettyJson
 } from "@agentic-profile/common";
 import {
     asyncHandler,
@@ -55,7 +55,7 @@ export function routes() {
         const data = await agentHooks<CommonHooks>().storage.dump();
         res.status(200)
             .set('Content-Type', 'application/json')
-            .send( prettyJSON(data) ); // make easier to read ;)
+            .send( prettyJson(data) ); // make easier to read ;)
     }));
 
     return router;

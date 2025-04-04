@@ -1,14 +1,12 @@
 import 'dotenv/config';
 
 import { join } from "path";
-import {
-    prettyJSON,
-    webDidToUrl
-} from "@agentic-profile/common";
+import { createEdDsaJwk } from "@agentic-profile/auth";
 import {
     createAgenticProfile,
-    saveProfile
-} from "@agentic-profile/express-common";
+    webDidToUrl
+} from "@agentic-profile/common";
+import { saveProfile } from "@agentic-profile/express-common";
 import { __dirname } from "./util.js";
 
 
@@ -16,15 +14,14 @@ import { __dirname } from "./util.js";
 
 	const services = [
         {
-            type: "presence-location",
-            url: `https://${process.env.AP_HOSTNAME}/locations`
-        },
-        {
-            type: "presence-event",
-            url: `https://${process.env.AP_HOSTNAME}/events`
+            subtype: "presence",
+            url: `https://${process.env.AP_HOSTNAME}/presence`
         }
     ];
-    const { profile, keyring } = await createAgenticProfile({ services });
+    const { profile, keyring } = await createAgenticProfile({
+        services,
+        createJwk: createEdDsaJwk 
+    });
     const did = `did:web:${process.env.AP_HOSTNAME}`;
     profile.id = did;
 
