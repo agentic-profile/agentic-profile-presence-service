@@ -28,6 +28,7 @@ export interface Storage extends ClientAgentSessionStorage {
     findNearbyAgents: ( coords: Geocoordinates, query: LocationQuery )=>Promise<NearbyAgent[]>,
 
     addAgentEvent: ( did: DID, eventUrl: string )=>Promise<void>,
+    syncAgentEvents: ( did: DID, eventUrls: string[] )=>Promise<void>,
     listEventAgents: ( eventUrl: string )=>Promise<DID[]>,
     removeAgentEvent: ( did: DID, eventUrl: string )=>Promise<void>,
 

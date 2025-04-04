@@ -7,7 +7,6 @@ import {
 } from "@agentic-profile/common";
 import {
     createAgenticProfile,
-    resolvePublicKey,
     saveProfile
 } from "@agentic-profile/express-common";
 import { __dirname } from "./util.js";
@@ -26,7 +25,6 @@ import { __dirname } from "./util.js";
         }
     ];
     const { profile, keyring } = await createAgenticProfile({ services });
-    const b64uPublicKey = resolvePublicKey( profile );
     const did = `did:web:${process.env.AP_HOSTNAME}`;
     profile.id = did;
 

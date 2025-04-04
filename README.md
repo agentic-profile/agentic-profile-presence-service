@@ -5,9 +5,9 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 ## Quickstart with Local Server
 
-1. Ensure you have a beta account for testing
+1. Ensure you have an agent for testing
 
-	$ node test/setup-beta-profile
+	$ node scripts/setup-global-profile
 
 2. Start the service locally
 

@@ -9,7 +9,6 @@ import {
 import {
     createAgenticProfile,
     fetchJson,
-    resolvePublicKey,
     saveProfile
 } from "@agentic-profile/express-common";
 
@@ -22,8 +21,7 @@ import {
             url: `https://agents.matchwise.ai/users/*/presence`
         }
     ];
-    const { profile, keyring } = await createAgenticProfile({ services });
-    const b64uPublicKey = resolvePublicKey( profile );
+    const { profile, keyring, b64uPublicKey } = await createAgenticProfile({ services });
 
     let savedProfile;
     try {

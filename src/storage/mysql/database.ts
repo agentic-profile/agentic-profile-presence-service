@@ -111,6 +111,32 @@ WHERE
         return rows.map((row: any) => row.did);
     }
 
+    async syncAgentEvents( did: DID, eventUrls: string[] ) {
+        // Step 1: Get current events for the DID
+        const currentRows = await queryRows(
+            `SELECT event_url FROM agent_events WHERE did = ?`,
+            [did]
+        );
+        const currentEventUrls = currentRows.map((row: any) => row.event_url);
+
+        // Step 2: Determine which events to remove and which to add
+        const toAdd = eventUrls.filter(url => !currentEventUrls.includes(url));
+        const toRemove = currentEventUrls.filter(url => !eventUrls.includes(url));
+
+        // Step 3: Remove stale events
+        if (toRemove.length > 0) {
+            await queryResult(
+                `DELETE FROM agent_events WHERE did = ? AND event_url IN (${toRemove.map(() => '?').join(',')})`,
+                [did, ...toRemove]
+            );
+        }
+
+        // Step 4: Add new events
+        for (const url of toAdd) {
+            await this.addAgentEvent(did, url); // uses your existing upsert logic
+        }
+    }
+
     async removeAgentEvent(did: DID, eventUrl: string) {
         await queryResult(
             `DELETE FROM agent_events WHERE did = ? AND event_url = ?`,

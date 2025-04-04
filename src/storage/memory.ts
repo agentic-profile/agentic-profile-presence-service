@@ -93,6 +93,23 @@ export class InMemoryStorage implements Storage {
         agentEventMap.set( key, { did, eventUrl, created: new Date() } );
     }
 
+    async syncAgentEvents( did: DID, eventUrls: string[] ) {
+        for( const url of eventUrls ) {
+            const key = agentEventKey( did, url );
+            console.log( 'adding event', key );
+            agentEventMap.set( key, { did, eventUrl: url, created: new Date() } );
+        }
+
+        // remove those not in list
+        [...agentEventMap.values()]
+            .filter(e=>e.did === did && eventUrls.includes(e.eventUrl) !== true)
+            .forEach(e=>{
+                const key = agentEventKey( e.did, e.eventUrl );
+                console.log( 'removing event', key );
+                agentEventMap.delete(key);
+            });
+    }
+
     async listEventAgents( eventUrl: string ) {
         return [...agentEventMap.values()]
             .filter(e=>e.eventUrl === eventUrl)

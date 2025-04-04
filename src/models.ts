@@ -22,7 +22,12 @@ export interface AgenticLocationUpdate {
     query?: LocationQuery
 }
 
-export interface AgenticEventUpdate {
+export interface AgenticEventsUpdate {
     broadcast?: boolean
-    eventUrl: string
+    eventUrls: string[]
+}
+
+export interface PresenceUpdate {
+    location?: AgenticLocationUpdate,
+    events?: AgenticEventsUpdate
 }

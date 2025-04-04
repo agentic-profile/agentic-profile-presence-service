@@ -2,24 +2,34 @@ import { DID } from "@agentic-profile/common";
 import { ServerError } from "@agentic-profile/express-common";
 
 import {
-    AgenticEventUpdate,
+    AgenticEventsUpdate,
 } from "./models.js";
 import {
     removeFragment,
     storage
 } from "./util.js";
 
-export async function saveEvent( did: DID, update: AgenticEventUpdate ) {
+export async function saveEvents( did: DID, update: AgenticEventsUpdate ) {
     did = removeFragment( did );
-    const { eventUrl } = update;
 
-    if( !eventUrl )
+    const { eventUrls: syncUrls } = update;
+    if( !syncUrls )
         throw new ServerError([4],"Missing required 'eventUrl' property");
-    const normalizedUrl = normalizeEventUrl( eventUrl );
 
-    await storage().addAgentEvent( did, normalizedUrl );
+    const warnings = [];
+    const eventUrls = [];
+    for( const url of syncUrls ) {
+        try {
+            const normalizedUrl = normalizeEventUrl( url );
+            eventUrls.push( normalizedUrl );
+        } catch( err ) {
+            warnings.push( `Failed to add event url ${url}: ${err}` );
+        }
+    }
 
-    return { did, eventUrl, broadcastResults: [] };
+    await storage().syncAgentEvents( did, eventUrls );
+
+    return { did, eventUrls, warnings, broadcastResults: [] };
 }
 
 function normalizeEventUrl( url: string ): string {
