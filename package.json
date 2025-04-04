@@ -1,6 +1,6 @@
 {
   "name": "agentic-profile-presence-service",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Accepts presence notifications and signals to agents when they are nearby",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/agentic-profile/agentic-profile-presence-service#readme",
   "dependencies": {
-    "@agentic-profile/express-common": "^0.4.3",
+    "@agentic-profile/express-common": "^0.4.4",
     "@codegenie/serverless-express": "^4.16.0",
     "dotenv": "^16.4.7"
   },
@@ -32,10 +32,5 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   },
-  "packageManager": "yarn@4.8.1",
-  "resolutions": {
-    "@agentic-profile/auth": "portal:/Users/mike/projects/iamagentic/agentic-profile-auth",
-    "@agentic-profile/common": "portal:/Users/mike/projects/iamagentic/agentic-profile-common",
-    "@agentic-profile/express-common": "portal:/Users/mike/projects/iamagentic/agentic-profile-express-common"
-  }
+  "packageManager": "yarn@4.8.1"
 }

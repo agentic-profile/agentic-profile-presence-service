@@ -15,7 +15,7 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 3. Try to communicate with the presence service
 
-	$ curl -X PUT http://localhost:3003/locations
+	$ curl -X PUT http://localhost:3003/presence
 
 4. Since you did not provide an Agentic authorization token, the server responded with a challenge similar to:
 
@@ -31,11 +31,11 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 6. Use the agent authorization token (session key) to authenticate and generate a chat reply
 
-    $ node test/share-location -i &lt;id from step 5&gt; -s &lt;secret from step 4&gt;
+    $ node scripts/share-location -i &lt;id from step 5&gt; -s &lt;secret from step 4&gt;
 
     For example:
 
-    node test/share-location -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+    node scripts/share-location -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
 
 
 ## Testing the Cloud Hosted Presence Service
