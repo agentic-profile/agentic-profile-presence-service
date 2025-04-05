@@ -20,7 +20,7 @@ import {
 
     const services = [
         {
-            subtype: "presence",
+            subtype: "presence-client",
             url: `https://agents.matchwise.ai/users/*/presence`
         }
     ];
@@ -28,6 +28,12 @@ import {
         services,
         createJwk: createEdDsaJwk 
     });
+
+    // hack the profile, so the well-known agentic profile can sign for the presence-client
+    const agent = profile.service.find(e=>e.id==="#agent-presence-client");
+    if( !agent )
+        throw new Error("Failed to find #agent-presence-client agent in profile");
+    agent.capabilityInvocation = [ "did:web:presence.p2pagentic.ai#identity-key" ];
 
     let savedProfile;
     try {

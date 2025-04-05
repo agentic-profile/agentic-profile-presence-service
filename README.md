@@ -17,7 +17,7 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 	$ curl -X PUT http://localhost:3003/presence
 
-4. Since you did not provide an Agentic authorization token, the server responded with a challenge similar to:
+    Since you did not provide an Agentic authorization token, the server responded with a challenge similar to:
 
     {
         "type": "agentic-challenge/0.3",
@@ -27,42 +27,27 @@ Accepts presence notifications and signals to agents when they are nearby.
         }
     }
 
-    NOTE: Copy the "id" and "secret" from your server's response for the next step.  In the above example the id is "1" and the secret is "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+4. Execute the share-location and share-event scripts which handles the challenge and generates an authToken
 
-6. Use the agent authorization token (session key) to authenticate and generate a chat reply
-
-    $ node scripts/share-location -i &lt;id from step 5&gt; -s &lt;secret from step 4&gt;
-
-    For example:
-
-    node scripts/share-location -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw"
+    $ node scripts/share-location
+    $ node scripts/share-event
 
 
 ## Testing the Cloud Hosted Presence Service
 
-1. Ensure the service is running.  In this example we will use the service at https://presence.agenticprofile.ai
+1. Ensure the cloud service is running.  In this example we will use the service at https://presence.agenticprofile.ai
 
 2. Ensure you have a local "beta" profile created
 
-	$ node test/setup-beta-profile
+	$ node scripts/setup-global-profile
 
-3. Try to communicate with the presence service
+4. Execute the share-location script which handles a challenge and generates an authToken
 
-	$ curl -X PUT https://presence.agenticprofile.ai/locations
-
-4. Use an agent authorization token to authenticate and generate a chat reply
-
-	Use the challenge "id" and "secret" returned from the server during step #3.
-
-    $ node test/share-location -a https://presence.agenticprofile.ai/locations -i &lt;id from step 3&gt; -s &lt;secret from step 3&gt;
-
-    For example:
-
-    node test/share-location -a https://presence.agenticprofile.ai/locations -i 1 -s "sA3xFXBp-9v8I0syAhcWcglgoRrTmj2UAiRmFpzpzbw" 
+    $ node scripts/share-location -a https://presence.agenticprofile.ai/presence
 
 
 
-## Configuring AWS
+## Configuring AWS Notes
 
 1. Create a Lambda function
 	- Author from scratch

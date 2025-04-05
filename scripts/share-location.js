@@ -1,16 +1,12 @@
-import { join } from "path";
-import os from "os";
 import { prettyJson } from "@agentic-profile/common";
 import {
+    generateAuthToken,
     resolveVerificationKey,
     sendAgenticPayload,
     signChallenge
 } from "@agentic-profile/auth";
-import {
-    argv,
-    generateAuthToken,
-    loadProfileAndKeyring
-} from "@agentic-profile/express-common";
+import { argv } from "@agentic-profile/express-common";
+import { createProfileResolver } from "./util.js";
 
 
 const ARGV_OPTIONS = {
@@ -56,21 +52,24 @@ const ARGV_OPTIONS = {
             }
         };
 
+        const { profileResolver, myProfileAndKeyring } = await createProfileResolver();
+        const agentDid = myProfileAndKeyring.profile.id + "#agent-presence-client";
+
         const { data } = await sendAgenticPayload({ 
             url: peerAgentUrl, 
             payload,
             resolveAuthToken: async ( agenticChallenge ) => {
                 return generateAuthToken({
-                    agentSubtype: "presence",
+                    agentDid,
                     agenticChallenge,
-                    profileDir: join( os.homedir(), ".agentic", "iam", "global-me" )
+                    profileResolver
                 })
             }
         });
 
         console.log(`Sharing result: ${prettyJson(data)}`);
     } catch( err ) {
-        console.log(`Sharing failed: ${err}` );
+        console.log("Sharing failed:", err );
     }
 })();
 

@@ -1,6 +1,6 @@
 import { 
     DID, 
-    removeFragment
+    removeFragmentId
 } from "@agentic-profile/common";
 import {
     AgenticLocationUpdate,
@@ -10,7 +10,7 @@ import { storage } from "./util.js";
 
 
 export async function saveLocation( did: DID, update: AgenticLocationUpdate ) {
-    did = removeFragment( did );
+    did = removeFragmentId( did );
     const { coords, query } = update;
     await storage().updateAgentLocation( did, coords );
 

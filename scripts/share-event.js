@@ -1,36 +1,22 @@
-import { join } from "path";
-import os from "os";
+import { prettyJson } from "@agentic-profile/common";
 import {
-    argv,
-    sendAgenticPayload
-} from "@agentic-profile/express-common";
-import { prettyJSON } from "@agentic-profile/common";
+    generateAuthToken,
+    resolveVerificationKey,
+    sendAgenticPayload,
+    signChallenge
+} from "@agentic-profile/auth";
+import { argv } from "@agentic-profile/express-common";
 
+import { createProfileResolver } from "./util.js";
 
 const ARGV_OPTIONS = {
     broadcast: {
         type: "boolean",
         short: "B"
     },
-    eventUrl: {
-        type: "string",
-        short: "e"
-    },
-    id: {
-        type: "string",
-        short: "i"
-    },
     peerAgentUrl: {
         type: "string",
         short: "a"
-    },
-    secret: {
-        type: "string",
-        short: "s"
-    },
-    type: {
-        type: "string",
-        short: "t"
     }
 };
 
@@ -42,36 +28,34 @@ const ARGV_OPTIONS = {
         options: ARGV_OPTIONS
     });
     const {
-        type = "presence",
-        secret,
         broadcast = false,
-        eventUrl = "https://lu.ma/zwterele",
-        peerAgentUrl = `http://localhost:${port}/events`
+        peerAgentUrl = `http://localhost:${port}/presence`
     } = values;
-    const id = Number( values.id );
 
-    /*
-    if( argv.length < 4 ) {
-        const command = argvToCommand(argv);
-        console.log( `Please provide the challenge 'id' and 'random' from the agent service, such as:\n    ${command} 1 ffgf6sdf76sdf76sdf`);
-        return;
-    }*/
+    try {
+        const payload = {
+            events: {
+                eventUrls: [ "https://lu.ma/zwterele" ]
+            }
+        };
 
-    const response = await sendAgenticPayload({
-        type,
-        challenge: { id, secret },
-        profileDir: join( os.homedir(), ".agentic", "iam", "global-me" ),
-        peerAgentUrl,
-        payload: {
-            eventUrl,
-            broadcast
-        }
-    });
+        const { profileResolver, myProfileAndKeyring } = await createProfileResolver();
+        const agentDid = myProfileAndKeyring.profile.id + "#agent-presence-client";
 
-    if( !response.ok )
-        console.log(`ERROR: Sharing failed: ${response.status}`);
-    else {
-        const result = await response.json();
-        console.log( `Result: ${prettyJSON(result)}` );
+        const { data } = await sendAgenticPayload({ 
+            url: peerAgentUrl, 
+            payload,
+            resolveAuthToken: async ( agenticChallenge ) => {
+                return generateAuthToken({
+                    agentDid,
+                    agenticChallenge,
+                    profileResolver
+                })
+            }
+        });
+
+        console.log(`Sharing result: ${prettyJson(data)}`);
+    } catch( err ) {
+        console.log("Sharing failed:", err );
     }
 })();

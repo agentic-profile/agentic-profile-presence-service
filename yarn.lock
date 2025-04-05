@@ -6,27 +6,27 @@ __metadata:
   cacheKey: 10c0
 
 "@agentic-profile/auth@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "@agentic-profile/auth@npm:0.4.4"
+  version: 0.4.5
+  resolution: "@agentic-profile/auth@npm:0.4.5"
   dependencies:
-    "@agentic-profile/common": "npm:^0.4.4"
+    "@agentic-profile/common": "npm:^0.4.5"
     "@noble/ed25519": "npm:^2.2.3"
-  checksum: 10c0/64d3379f5d5069198a544d6a5e3b01fa45f2cfebb4fc1f125be012f47efcb45ee58e6a4f0558aa34321abe80c4cd399bdd51c2b330fe2e72251e701877813de1
+  checksum: 10c0/ed4677b2a9f31ea0d8c8db516f72ff190b73437bc3057ad4ec109661382870213f3916d68dd2f4d1dcdc7721d1cf8e11baf7c49082ab858cd98e30f5cf94dac0
   languageName: node
   linkType: hard
 
-"@agentic-profile/common@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "@agentic-profile/common@npm:0.4.4"
+"@agentic-profile/common@npm:^0.4.4, @agentic-profile/common@npm:^0.4.5":
+  version: 0.4.5
+  resolution: "@agentic-profile/common@npm:0.4.5"
   dependencies:
     did-resolver: "npm:^4.1.0"
-  checksum: 10c0/c5121907e11fe8a305950fa1bbfe847f82b21a437dd21a8d12aeb7d4477810709ca018f28d94010191004704b590457b382c44a759536fd86ad91ecc2c639d3d
+  checksum: 10c0/0c77bc1f5f9b47c270ff1de02392142e25cdd880d1c80880f05982c81fefbe4045e077ad6bf176c9914819050f81029cb68863a83884d2c9d68cac589352b0de
   languageName: node
   linkType: hard
 
-"@agentic-profile/express-common@npm:^0.4.4":
-  version: 0.4.4
-  resolution: "@agentic-profile/express-common@npm:0.4.4"
+"@agentic-profile/express-common@npm:^0.4.5":
+  version: 0.4.5
+  resolution: "@agentic-profile/express-common@npm:0.4.5"
   dependencies:
     "@agentic-profile/auth": "npm:^0.4.4"
     "@agentic-profile/common": "npm:^0.4.4"
@@ -34,7 +34,7 @@ __metadata:
     express: "npm:^4.21.1"
     morgan: "npm:^1.10.0"
     mysql2: "npm:^3.14.0"
-  checksum: 10c0/f18ec29ddeac81224e765f36f1a12476d4ad6aba54e419b538808c90e9204290ed772f5f3bd5bed05385f55eb4324d1b3f4899799f9503a66076bee9ca6a7e13
+  checksum: 10c0/bd91149112b13ed85047372e992f770865f17e413b526e33bf84b28cc7406e9246de3d24aa9087c64550c8e429d521bd354f8367413a0e9eacebd71610a1096e
   languageName: node
   linkType: hard
 
@@ -263,7 +263,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "agentic-profile-presence-service@workspace:."
   dependencies:
-    "@agentic-profile/express-common": "npm:^0.4.4"
+    "@agentic-profile/express-common": "npm:^0.4.5"
     "@codegenie/serverless-express": "npm:^4.16.0"
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^5.0.1"

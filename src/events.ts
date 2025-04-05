@@ -1,6 +1,6 @@
 import {
     DID,
-    removeFragment
+    removeFragmentId
 } from "@agentic-profile/common";
 import { ServerError } from "@agentic-profile/express-common";
 
@@ -10,7 +10,7 @@ import {
 import { storage } from "./util.js";
 
 export async function saveEvents( did: DID, update: AgenticEventsUpdate ) {
-    did = removeFragment( did );
+    did = removeFragmentId( did );
 
     const { eventUrls: syncUrls } = update;
     if( !syncUrls )
