@@ -3,13 +3,13 @@ import {
     removeFragmentId
 } from "@agentic-profile/common";
 import {
-    AgenticLocationUpdate,
+    LocationUpdate,
     NearbyAgent
 } from "./models.js";
 import { storage } from "./util.js";
 
 
-export async function saveLocation( did: DID, update: AgenticLocationUpdate ) {
+export async function saveLocation( did: DID, update: LocationUpdate ) {
     did = removeFragmentId( did );
     const { coords, query } = update;
     await storage().updateAgentLocation( did, coords );

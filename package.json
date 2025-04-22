@@ -20,17 +20,19 @@
   },
   "homepage": "https://github.com/agentic-profile/agentic-profile-presence-service#readme",
   "dependencies": {
-    "@agentic-profile/express-common": "^0.4.5",
+    "@agentic-profile/express-common": "^0.4.10",
     "@codegenie/serverless-express": "^4.16.0",
-    "dotenv": "^16.4.7"
+    "dotenv": "^16.5.0",
+    "jsdom": "^26.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/jsdom": "^21.1.7",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "packageManager": "yarn@4.8.1"
 }

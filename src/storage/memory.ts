@@ -1,4 +1,7 @@
-import { DID } from "@agentic-profile/common";
+import {
+    AgenticProfile,
+    DID
+} from "@agentic-profile/common";
 import {
     ClientAgentSession,
     ClientAgentSessionUpdates
@@ -9,6 +12,10 @@ import {
     VerificationMethodRecord
 } from "./models.js";
 import {
+    EventAttendee,
+    EventAttendeeUpdate,
+    EventListing,
+    EventListingUpdate,
     Geocoordinates,
     LocationQuery,
     NearbyAgent
@@ -17,10 +24,9 @@ import {
 let nextSessionId = 1;
 const clientSessionMap = new Map<number,ClientAgentSession>();
 
-interface AgentEventRecord {
-    did: DID,
-    eventUrl: string,
-    created: Date
+interface EventRecord {
+    listing: EventListing,
+    attendees: Map<DID,EventAttendee>
 }
 
 interface LocationRecord {
@@ -30,16 +36,12 @@ interface LocationRecord {
 
 const verificationMethodMap = new Map<string,VerificationMethodRecord>();
 const agentLocationMap = new Map<string,LocationRecord>();
-const agentEventMap = new Map<string,AgentEventRecord>();
+const eventRecordMap = new Map<string,EventRecord>();
+const profileMap = new Map<string,AgenticProfile>();
 
 function mapToObject<K extends PropertyKey, V>(map: Map<K, V>): Record<K, V> {
     return Object.fromEntries(map) as Record<K, V>;
 }
-
-function agentEventKey( did: DID, eventUrl: string ) {
-    return `${did} ${eventUrl}`;    
-}
-
 
 export class InMemoryStorage implements Storage {
 
@@ -49,7 +51,8 @@ export class InMemoryStorage implements Storage {
             clientSessions: mapToObject( clientSessionMap ),
             verificationMethods: mapToObject( verificationMethodMap ),
             agentLocations: mapToObject( agentLocationMap ),
-            agentEvents: mapToObject( agentEventMap )
+            eventRecords: mapToObject( eventRecordMap ),
+            profileCache: mapToObject( profileMap )
         }
     }
 
@@ -88,11 +91,13 @@ export class InMemoryStorage implements Storage {
     // Events
     //
  
-    async addAgentEvent( did: DID, eventUrl: string ) {
-        const key = agentEventKey( did, eventUrl );
-        agentEventMap.set( key, { did, eventUrl, created: new Date() } );
+    async updateEventAttendee( eventUrl: string, update: EventAttendeeUpdate ) {
+        const record = ensureEventRecord( eventUrl, eventRecordMap );
+        const { did, rsvp } = update;
+        record.attendees.set( did, { did, rsvp, updated: new Date() } );
     }
 
+    /*
     async syncAgentEvents( did: DID, eventUrls: string[] ) {
         for( const url of eventUrls ) {
             const key = agentEventKey( did, url );
@@ -108,17 +113,20 @@ export class InMemoryStorage implements Storage {
                 console.log( 'removing event', key );
                 agentEventMap.delete(key);
             });
-    }
+    }*/
 
-    async listEventAgents( eventUrl: string ) {
-        return [...agentEventMap.values()]
-            .filter(e=>e.eventUrl === eventUrl)
-            .map(e=>e.did);
+    async listEventAttendees( eventUrl: string ) {
+        const attendees = eventRecordMap.get( eventUrl )?.attendees?.values();
+        return attendees ? [...attendees] : [];
     }
     
-    async removeAgentEvent( did: DID, eventUrl: string ) {
-        const key = agentEventKey( did, eventUrl );
-        agentEventMap.delete( key )
+    async removeEventAttendee( eventUrl: string, did: DID ) {
+        eventRecordMap.get( eventUrl )?.attendees?.delete( did );
+    }
+
+    async updateEventListing( eventUrl: string, update: EventListingUpdate ) {
+        const record = ensureEventRecord( eventUrl, eventRecordMap );
+        record.listing = { ...record.listing, ...update, updated: new Date() };   
     }
 
     //
@@ -142,6 +150,27 @@ export class InMemoryStorage implements Storage {
         else
             clientSessionMap.set( id, { ...session, ...updates } );
     }
+
+    //
+    // Agentic Profile Cache
+    //
+
+    async cacheAgenticProfile( profile: AgenticProfile ) { 
+        profileMap.set( profile.id, profile )
+    }
+
+    async getCachedAgenticProfile( did: DID ) {
+        return profileMap.get( did )
+    }
+}
+
+function ensureEventRecord( eventUrl: string, eventRecordMap: Map<DID,EventRecord> ) {
+    let record = eventRecordMap.get( eventUrl );
+    if( !record ) {
+        record = { attendees: new Map<DID,EventAttendee>() } as EventRecord;
+        eventRecordMap.set( eventUrl, record );
+    }
+    return record;
 }
 
 // maxAge in minutes

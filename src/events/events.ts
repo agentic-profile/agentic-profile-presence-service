@@ -1,0 +1,78 @@
+import {
+    DID,
+    removeFragmentId
+} from "@agentic-profile/common";
+import { ServerError } from "@agentic-profile/express-common";
+
+import {
+    EventUpdate,
+} from "../models.js";
+import { storage } from "../util.js";
+
+import {
+    fetchLumaEventDetails,
+    normalizeLumaUrl
+} from "./luma.js";
+
+/*
+export async function saveEvents( did: DID, update: BatchEventUpdate ) {
+    did = removeFragmentId( did );
+
+    const { eventUrls: syncUrls } = update;
+    if( !syncUrls )
+        throw new ServerError([4],"Missing required 'eventUrls' property");
+
+    const warnings = [];
+    const events = [];
+    for( const url of syncUrls ) {
+        try {
+            const normalizedUrl = normalizeEventUrl( url );
+            eventUrls.push( normalizedUrl );
+        } catch( err ) {
+            warnings.push( `Failed to add event url ${url}: ${err}` );
+        }
+    }
+
+    await storage().syncAgentEvents( did, eventUrls );
+
+    return { did, eventUrls, warnings, broadcastResults: [] };
+}*/
+
+export async function saveEvent( did: DID, update: EventUpdate ) {
+    did = removeFragmentId( did );
+    const { eventUrl, rsvp /*, broadcast*/ } = update;
+
+    const { url, type } = normalizeEventUrl( eventUrl );
+
+    const listing = await fetchEventDetails( url, type );
+    await storage().updateEventListing( url, listing );
+
+    await storage().updateEventAttendee( url, { did, rsvp } );
+    const attendees = await storage().listEventAttendees( url );
+
+    return { eventUrl: url, listing, attendees };
+}
+
+interface EventUrl {
+    url: string,
+    type: "luma"
+}
+
+function normalizeEventUrl( eventUrl: string ): EventUrl {
+    const parsedUrl = new URL( eventUrl );
+
+    let url = normalizeLumaUrl( parsedUrl );
+    if( url )
+        return { url, type: "luma" };
+
+    throw new ServerError([4],"Unrecognized event type for " + eventUrl );
+}
+
+async function fetchEventDetails( url: string, type: string ) {
+    if( type === "luma" )
+        return await fetchLumaEventDetails( url );
+
+    throw new ServerError([4],"Uknown event type " + type );
+} 
+
+

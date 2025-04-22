@@ -14,14 +14,22 @@ const ARGV_OPTIONS = {
         type: "boolean",
         short: "B"
     },
-    peerAgentUrl: {
+    eventUrl: {
         type: "string",
-        short: "a"
+        short: "e"
+    },
+    serviceUrl: {
+        type: "string",
+        short: "s"
+    },
+    rsvp: {
+        type: "string",
+        short: "r"
     }
 };
 
 (async ()=>{
-    const port = process.env.PORT || 3003;
+    const port = process.env.PORT || 3004;
 
     const { values } = argv.parseArgs({
         args: process.argv.slice(2),
@@ -29,21 +37,23 @@ const ARGV_OPTIONS = {
     });
     const {
         broadcast = false,
-        peerAgentUrl = `http://localhost:${port}/presence`
+        rsvp = "yes",
+        serviceUrl = `http://localhost:${port}/events`,
+        eventUrl = "https://lu.ma/zwterele"
     } = values;
 
     try {
         const payload = {
-            events: {
-                eventUrls: [ "https://lu.ma/zwterele" ]
-            }
+            eventUrl: "https://lu.ma/zwterele",
+            rsvp,
+            broadcast
         };
 
         const { profileResolver, myProfileAndKeyring } = await createProfileResolver();
         const agentDid = myProfileAndKeyring.profile.id + "#agent-presence-client";
 
         const { data } = await sendAgenticPayload({ 
-            url: peerAgentUrl, 
+            url: serviceUrl, 
             payload,
             resolveAuthToken: async ( agenticChallenge ) => {
                 return generateAuthToken({

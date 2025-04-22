@@ -15,7 +15,7 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 3. Try to communicate with the presence service
 
-	$ curl -X PUT http://localhost:3003/presence
+	$ curl -X PUT http://localhost:3004/events
 
     Since you did not provide an Agentic authorization token, the server responded with a challenge similar to:
 
@@ -35,7 +35,7 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 ## Testing the Cloud Hosted Presence Service
 
-1. Ensure the cloud service is running.  In this example we will use the service at https://presence.agenticprofile.ai
+1. Ensure the cloud service is running.  In this example we will use the service at https://presence.p2pagentic.ai
 
 2. Ensure you have a local "beta" profile created
 
@@ -43,7 +43,7 @@ Accepts presence notifications and signals to agents when they are nearby.
 
 4. Execute the share-location script which handles a challenge and generates an authToken
 
-    $ node scripts/share-location -a https://presence.agenticprofile.ai/presence
+    $ node scripts/share-location -a https://presence.p2pagentic.ai/presence
 
 
 

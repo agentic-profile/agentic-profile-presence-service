@@ -1,9 +1,7 @@
 import { prettyJson } from "@agentic-profile/common";
 import {
     generateAuthToken,
-    resolveVerificationKey,
     sendAgenticPayload,
-    signChallenge
 } from "@agentic-profile/auth";
 import { argv } from "@agentic-profile/express-common";
 import { createProfileResolver } from "./util.js";
@@ -29,7 +27,7 @@ const ARGV_OPTIONS = {
 };
 
 (async ()=>{
-    const port = process.env.PORT || 3003;
+    const port = process.env.PORT || 3004;
 
     const { values } = argv.parseArgs({
         args: process.argv.slice(2),

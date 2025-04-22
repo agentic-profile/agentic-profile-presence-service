@@ -19,9 +19,9 @@ CREATE TABLE client_agent_sessions(
 );
 
 CREATE TABLE agentic_profile_cache(
-    profile_did VARCHAR(255) NOT NULL, -- Might NOT be canonical
-    agentic_profile JSON NOT NULL, -- cached profile
-    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    profile_did VARCHAR(255) NOT NULL,
+    agentic_profile JSON NOT NULL,      -- cached profile
+    updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE(profile_did)
 );
 
@@ -40,10 +40,21 @@ CREATE TABLE agent_coords(
     updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-CREATE TABLE agent_events(
+CREATE TABLE event_listings(
+    event_url VARCHAR(255) NOT NULL PRIMARY KEY,
+    title TINYTEXT,
+    description TEXT,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    address JSON,
+    coords POINT NOT NULL,
+    updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE event_attendees(
     did VARCHAR(255) NOT NULL,
-    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     event_url VARCHAR(255) NOT NULL,
+    rsvp VARCHAR(24),
     updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE(event_url,did)
 );

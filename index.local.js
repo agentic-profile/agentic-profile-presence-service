@@ -14,7 +14,7 @@ import { InMemoryStorage } from "./dist/storage/memory.js";
 import { MySQLStorage } from "./dist/storage/mysql/database.js";
 
 const Storage = process.env.AP_STORAGE === 'mysql' ? MySQLStorage : InMemoryStorage;
-const port = process.env.PORT || 3003;
+const port = process.env.PORT || 3004;
 const TESTING_DID_PATH = `web:localhost%3A${port}:iam`;
 setAgentHooks({
     storage: new Storage(),

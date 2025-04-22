@@ -6,9 +6,12 @@ import {
 } from "@agentic-profile/common";
 
 import {
+    EventAttendee,
+    EventAttendeeUpdate,
+    EventListingUpdate,
     Geocoordinates,
+    LocationQuery,
     NearbyAgent,
-    LocationQuery
 } from "../models.js";
 
 export interface VerificationMethodRecord {
@@ -27,10 +30,12 @@ export interface Storage extends ClientAgentSessionStorage {
     updateAgentLocation: ( did: DID, coords: Geocoordinates )=>Promise<void>,
     findNearbyAgents: ( coords: Geocoordinates, query: LocationQuery )=>Promise<NearbyAgent[]>,
 
-    addAgentEvent: ( did: DID, eventUrl: string )=>Promise<void>,
-    syncAgentEvents: ( did: DID, eventUrls: string[] )=>Promise<void>,
-    listEventAgents: ( eventUrl: string )=>Promise<DID[]>,
-    removeAgentEvent: ( did: DID, eventUrl: string )=>Promise<void>,
+    updateEventAttendee: ( eventUrl: string, update: EventAttendeeUpdate )=>Promise<void>,
+    //syncAgentEvents: ( did: DID, eventUrls: string[] )=>Promise<void>,
+    listEventAttendees: ( eventUrl: string )=>Promise<EventAttendee[]>,
+    removeEventAttendee: ( eventUrl: string, did: DID )=>Promise<void>,
+
+    updateEventListing: ( eventUrl: string, update: EventListingUpdate )=>Promise<void>, 
 
     // Debug (optional)
     dump: () => Promise<any>

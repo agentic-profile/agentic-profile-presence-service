@@ -1,4 +1,7 @@
-import { DID } from "@agentic-profile/common";
+import {
+    AgenticProfile,
+    DID
+} from "@agentic-profile/common";
 import {
     ClientAgentSession,
     ClientAgentSessionUpdates
@@ -16,10 +19,19 @@ import {
     VerificationMethodRecord
 } from "../models.js";
 import {
+    EventAttendee,
+    EventAttendeeUpdate,
+    EventListingUpdate,
     Geocoordinates,
     LocationQuery,
     NearbyAgent
 } from "../../models.js";
+
+interface AgenticProfileRecord {
+    profileDid: string,
+    agenticProfile: AgenticProfile,
+    updated: Date
+}
 
 export class MySQLStorage implements Storage {
 
@@ -94,23 +106,24 @@ WHERE
     // Events
     //
 
-    async addAgentEvent(did: DID, eventUrl: string) {
+    async updateEventAttendee( eventUrl: string, update: EventAttendeeUpdate ) {
+        const { did, rsvp } = update;
+        const insert = { did, event_url: eventUrl, rsvp };
         await queryResult(
-            `INSERT INTO agent_events (did, event_url) 
-             VALUES (?, ?)
-             ON DUPLICATE KEY UPDATE updated = CURRENT_TIMESTAMP`,
-            [did, eventUrl]
+            `INSERT INTO event_attendees SET ? 
+             ON DUPLICATE KEY UPDATE ?`,
+            [insert, { did, rsvp }]
         );
     }
 
-    async listEventAgents(eventUrl: string): Promise<DID[]> {
-        const rows = await queryRows(
-            `SELECT did FROM agent_events WHERE event_url = ?`,
+    async listEventAttendees(eventUrl: string): Promise<EventAttendee[]> {
+        return await queryRows<EventAttendee>(
+            `SELECT did,rsvp,updated FROM event_attendees WHERE event_url=?`,
             [eventUrl]
         );
-        return rows.map((row: any) => row.did);
     }
 
+    /*
     async syncAgentEvents( did: DID, eventUrls: string[] ) {
         // Step 1: Get current events for the DID
         const currentRows = await queryRows(
@@ -135,13 +148,37 @@ WHERE
         for (const url of toAdd) {
             await this.addAgentEvent(did, url); // uses your existing upsert logic
         }
+    }*/
+
+    async removeEventAttendee( eventUrl: string, did: DID ) {
+        await queryResult(
+            `DELETE FROM event_attendees WHERE event_url = ? AND did = ?`,
+            [ eventUrl, did ]
+        );
     }
 
-    async removeAgentEvent(did: DID, eventUrl: string) {
+    async updateEventListing( eventUrl: string, update: EventListingUpdate ) {
+        const { title, description, startDate, endDate, address, coords } = update;
+        const dbUpdate = {
+            title,
+            description,
+            start_date: startDate,
+            end_date: endDate,
+            address: address ? JSON.stringify( address ) : address    
+        }
+        const insert = {
+            event_url: eventUrl,
+            ...dbUpdate
+        };
+
+        const coordSQL = coords ? ",coords=POINT(?,?)" : "";
+        const coordParams = coords ? [coords.longitude,coords.latitude] : [];
+
         await queryResult(
-            `DELETE FROM agent_events WHERE did = ? AND event_url = ?`,
-            [did, eventUrl]
-        );
+            `INSERT INTO event_listings SET ?${coordSQL} 
+             ON DUPLICATE KEY UPDATE ?${coordSQL}`,
+            [ insert, ...coordParams, dbUpdate, ...coordParams ]
+        );      
     }
 
 
@@ -174,6 +211,36 @@ WHERE
     }
 
     //
+    // Agentic Profile Cache
+    //
+
+    async cacheAgenticProfile( profile: AgenticProfile ) {
+        const update = {
+            agentic_profile: JSON.stringify(profile)
+        };
+        const insert = {
+            ...update,
+            profile_did: profile.id,
+        };
+        await mysql.queryResult(
+            "INSERT INTO agentic_profile_cache SET ? ON DUPLICATE KEY UPDATE ?",
+            [insert,update]
+        );
+    }
+
+    async getCachedAgenticProfile( did: DID ) {
+        const AGENTIC_PROFILE_CACHE_COLUMNS = "profile_did as profileDid,agentic_profile as agenticProfile,updated";
+        const record = await queryFirstRow<AgenticProfileRecord>(
+            `SELECT ${AGENTIC_PROFILE_CACHE_COLUMNS} FROM agentic_profile_cache WHERE profile_did=?`,
+            [did]
+        );
+        if( record && !isExpired( record ) )
+            return record.agenticProfile;
+        else
+            return undefined;
+    }
+
+    //
     // Debug
     //
 
@@ -191,4 +258,12 @@ WHERE
             verificationMethods
         }
     }
+}
+
+function isExpired( record: AgenticProfileRecord ) {
+    const updated = new Date( record.updated );
+    const now = new Date();
+    const ttl = record.agenticProfile.ttl ?? 86400;
+    const result = updated.getTime() + (ttl * 1000) < now.getTime();
+    return result;
 }

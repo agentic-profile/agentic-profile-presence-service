@@ -13,8 +13,11 @@ import {
 } from "@agentic-profile/express-common";
 
 import { saveLocation } from "./locations.js";
-import { saveEvents } from "./events.js";
-import { PresenceUpdate } from "./models.js";
+import { saveEvent } from "./events/events.js";
+import {
+    EventUpdate,
+    LocationUpdate
+} from "./models.js";
 
 
 export function routes() {
@@ -30,20 +33,26 @@ export function routes() {
         }); 
     });
 
-    router.put( "/presence", asyncHandler( async (req: Request, res: Response) => {
+    router.put( "/location", asyncHandler( async (req: Request, res: Response) => {
         const agentSession = await resolveAgentSession( req, res );
         if( !agentSession )
             // A 401 has been issued with a challenge, or an auth error has been thrown
             return;
 
         const { agentDid } = agentSession;
-        const { location, events } = req.body as PresenceUpdate;
+        const result = await saveLocation( agentDid, req.body as LocationUpdate );
 
-        const result = {} as any;
-        if( location )
-            result.location = await saveLocation( agentDid, location );
-        if( events )
-            result.events = await saveEvents( agentDid, events );
+        res.json( result );   
+    }));
+
+    router.put( "/events", asyncHandler( async (req: Request, res: Response) => {
+        const agentSession = await resolveAgentSession( req, res );
+        if( !agentSession )
+            // A 401 has been issued with a challenge, or an auth error has been thrown
+            return;
+
+        const { agentDid } = agentSession;
+        const result = await saveEvent( agentDid, req.body as EventUpdate );
 
         res.json( result );   
     }));
