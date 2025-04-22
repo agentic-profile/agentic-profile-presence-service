@@ -1,6 +1,8 @@
 import { ServerError } from "@agentic-profile/express-common";
 //import { DOMParser } from "xmldom";
 import { JSDOM } from "jsdom";
+import log from "loglevel";
+
 import {
     EventListing
 } from "../models.js";
@@ -26,6 +28,7 @@ export async function fetchLumaEventDetails( url: string ): Promise<EventListing
     if (!response.ok)
         throw new ServerError([4],`Failed to fetch event from URL: ${response.statusText} ${url}`);
 
+    log.info( "fetchLumaEventDetails", url, response.ok );
     const html = await response.text();
 
     // Create a DOM parser

@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from "express";
+import log from "loglevel";
 
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -12,6 +13,9 @@ import { app } from "@agentic-profile/express-common";
 import { routes } from "./dist/routes.js";
 import { InMemoryStorage } from "./dist/storage/memory.js";
 import { MySQLStorage } from "./dist/storage/mysql/database.js";
+
+log.setLevel( process.env.LOG_LEVEL ?? "trace" );
+console.log( "log level", log.getLevel() );
 
 const Storage = process.env.AP_STORAGE === 'mysql' ? MySQLStorage : InMemoryStorage;
 const port = process.env.PORT || 3004;

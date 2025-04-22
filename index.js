@@ -1,5 +1,6 @@
 import serverlessExpress from "@codegenie/serverless-express";
 import express from "express";
+import log from "loglevel";
 
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
@@ -13,6 +14,8 @@ import { routes } from "./dist/routes.js";
 
 import { MySQLStorage } from "./dist/storage/mysql/database.js";
 
+log.setLevel( process.env.LOG_LEVEL ?? "info" );
+console.log( "log level", log.getLevel() );
 
 const port = process.env.PORT || 3003;
 const TESTING_DID_PATH = `web:localhost%3A${port}:iam`;

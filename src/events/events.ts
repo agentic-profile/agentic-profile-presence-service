@@ -3,6 +3,7 @@ import {
     removeFragmentId
 } from "@agentic-profile/common";
 import { ServerError } from "@agentic-profile/express-common";
+import log from "loglevel";
 
 import {
     EventUpdate,
@@ -40,15 +41,20 @@ export async function saveEvents( did: DID, update: BatchEventUpdate ) {
 
 export async function saveEvent( did: DID, update: EventUpdate ) {
     did = removeFragmentId( did );
+    log.info("saveEvent", did, update );
     const { eventUrl, rsvp /*, broadcast*/ } = update;
 
     const { url, type } = normalizeEventUrl( eventUrl );
 
     const listing = await fetchEventDetails( url, type );
+
+    log.info("updating event listing", url );
     await storage().updateEventListing( url, listing );
 
+    log.info("updating event attendee", url );
     await storage().updateEventAttendee( url, { did, rsvp } );
     const attendees = await storage().listEventAttendees( url );
+    log.info("event attendees", attendees );
 
     return { eventUrl: url, listing, attendees };
 }
@@ -69,6 +75,7 @@ function normalizeEventUrl( eventUrl: string ): EventUrl {
 }
 
 async function fetchEventDetails( url: string, type: string ) {
+    log.info("fetchEventDetails", url, type );
     if( type === "luma" )
         return await fetchLumaEventDetails( url );
 
