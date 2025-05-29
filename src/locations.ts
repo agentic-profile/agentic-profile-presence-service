@@ -1,22 +1,23 @@
 import { 
-    DID, 
-    removeFragmentId
+    DID
+} from "@agentic-profile/common/schema";
+import { 
+    pruneFragmentId
 } from "@agentic-profile/common";
 import {
     LocationUpdate,
     NearbyAgent
 } from "./models.js";
-import { storage } from "./util.js";
+import { UnifiedStore } from "./storage/models.js";
 
-
-export async function saveLocation( did: DID, update: LocationUpdate ) {
-    did = removeFragmentId( did );
+export async function saveLocation( did: DID, update: LocationUpdate, store: UnifiedStore ) {
+    ({documentId: did} = pruneFragmentId( did ));
     const { coords, query } = update;
-    await storage().updateAgentLocation( did, coords );
+    await store.updateAgentLocation( did, coords );
 
     let nearby: undefined | NearbyAgent[] = undefined;
     if( query )
-        nearby = await storage().findNearbyAgents( coords, query );
+        nearby = await store.findNearbyAgents( coords, query );
 
     return { did, coords, nearby, broadcastResults: [] };
 }

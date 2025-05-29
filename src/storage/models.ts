@@ -1,9 +1,9 @@
-import { ClientAgentSessionStorage } from "@agentic-profile/auth";
+import { ClientAgentSessionStore } from "@agentic-profile/auth";
 import {
     DID,
     EdDSAPrivateJWK,
     EdDSAPublicJWK
-} from "@agentic-profile/common";
+} from "@agentic-profile/common/schema";
 
 import {
     EventAttendee,
@@ -21,7 +21,7 @@ export interface VerificationMethodRecord {
     privateKeyJwk: EdDSAPrivateJWK
 }
 
-export interface Storage extends ClientAgentSessionStorage {
+export interface UnifiedStore extends ClientAgentSessionStore {
 
     addVerificationMethod: ( method: VerificationMethodRecord )=>Promise<void>,
     listVerificationMethods: ()=>Promise<VerificationMethodRecord[]>,
@@ -39,8 +39,4 @@ export interface Storage extends ClientAgentSessionStorage {
 
     // Debug (optional)
     dump: () => Promise<any>
-}
-
-export interface StorageHook {
-    storage: Storage
 }

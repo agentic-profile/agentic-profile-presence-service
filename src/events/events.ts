@@ -1,19 +1,15 @@
-import {
-    DID,
-    removeFragmentId
-} from "@agentic-profile/common";
+import { removeFragmentId } from "@agentic-profile/common";
+import { DID } from "@agentic-profile/common/schema";
 import { ServerError } from "@agentic-profile/express-common";
 import log from "loglevel";
 
-import {
-    EventUpdate,
-} from "../models.js";
-import { storage } from "../util.js";
+import { EventUpdate } from "../models.js";
 
 import {
     fetchLumaEventDetails,
     normalizeLumaUrl
 } from "./luma.js";
+import { UnifiedStore } from "../storage/models.js";
 
 /*
 export async function saveEvents( did: DID, update: BatchEventUpdate ) {
@@ -39,7 +35,7 @@ export async function saveEvents( did: DID, update: BatchEventUpdate ) {
     return { did, eventUrls, warnings, broadcastResults: [] };
 }*/
 
-export async function saveEvent( did: DID, update: EventUpdate ) {
+export async function saveEvent( did: DID, update: EventUpdate, store: UnifiedStore ) {
     did = removeFragmentId( did );
     log.info("saveEvent", did, update );
     const { eventUrl, rsvp /*, broadcast*/ } = update;
@@ -49,11 +45,11 @@ export async function saveEvent( did: DID, update: EventUpdate ) {
     const listing = await fetchEventDetails( url, type );
 
     log.info("updating event listing", url );
-    await storage().updateEventListing( url, listing );
+    await store.updateEventListing( url, listing );
 
     log.info("updating event attendee", url );
-    await storage().updateEventAttendee( url, { did, rsvp } );
-    const attendees = await storage().listEventAttendees( url );
+    await store.updateEventAttendee( url, { did, rsvp } );
+    const attendees = await store.listEventAttendees( url );
     log.info("event attendees", attendees );
 
     return { eventUrl: url, listing, attendees };
@@ -81,5 +77,3 @@ async function fetchEventDetails( url: string, type: string ) {
 
     throw new ServerError([4],"Uknown event type " + type );
 } 
-
-

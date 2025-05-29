@@ -1,14 +1,14 @@
 import {
     AgenticProfile,
     DID
-} from "@agentic-profile/common";
+} from "@agentic-profile/common/schema";
 import {
     ClientAgentSession,
     ClientAgentSessionUpdates
 } from "@agentic-profile/auth";
 
 import {
-    Storage,
+    UnifiedStore,
     VerificationMethodRecord
 } from "./models.js";
 import {
@@ -43,7 +43,7 @@ function mapToObject<K extends PropertyKey, V>(map: Map<K, V>): Record<K, V> {
     return Object.fromEntries(map) as Record<K, V>;
 }
 
-export class InMemoryStorage implements Storage {
+export class InMemoryStore implements UnifiedStore {
 
     async dump() {
         return {
@@ -155,11 +155,11 @@ export class InMemoryStorage implements Storage {
     // Agentic Profile Cache
     //
 
-    async cacheAgenticProfile( profile: AgenticProfile ) { 
+    async saveAgenticProfile( profile: AgenticProfile ) { 
         profileMap.set( profile.id, profile )
     }
 
-    async getCachedAgenticProfile( did: DID ) {
+    async loadAgenticProfile( did: DID ) {
         return profileMap.get( did )
     }
 }

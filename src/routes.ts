@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 
 import {
-    agentHooks,
-    CommonHooks,
+    createDidResolver,
     prettyJson
 } from "@agentic-profile/common";
 import {
@@ -18,7 +17,10 @@ import {
     EventUpdate,
     LocationUpdate
 } from "./models.js";
+import { MySQLStore } from "./storage/mysql.js";
 
+const store = new MySQLStore();
+const didResolver = createDidResolver({ store });
 
 export function routes() {
     var router = express.Router();
@@ -34,25 +36,25 @@ export function routes() {
     });
 
     router.put( "/location", asyncHandler( async (req: Request, res: Response) => {
-        const agentSession = await resolveAgentSession( req, res );
+        const agentSession = await resolveAgentSession( req, res, store, didResolver );
         if( !agentSession )
             // A 401 has been issued with a challenge, or an auth error has been thrown
             return;
 
         const { agentDid } = agentSession;
-        const result = await saveLocation( agentDid, req.body as LocationUpdate );
+        const result = await saveLocation( agentDid, req.body as LocationUpdate, store );
 
         res.json( result );   
     }));
 
     router.put( "/events", asyncHandler( async (req: Request, res: Response) => {
-        const agentSession = await resolveAgentSession( req, res );
+        const agentSession = await resolveAgentSession( req, res, store, didResolver );
         if( !agentSession )
             // A 401 has been issued with a challenge, or an auth error has been thrown
             return;
 
         const { agentDid } = agentSession;
-        const result = await saveEvent( agentDid, req.body as EventUpdate );
+        const result = await saveEvent( agentDid, req.body as EventUpdate, store );
 
         res.json( result );   
     }));
@@ -61,7 +63,7 @@ export function routes() {
         if( !isAdmin( req ) )
             throw new Error( "/storage only available to admins" );
 
-        const data = await agentHooks<CommonHooks>().storage.dump();
+        const data = await store.dump();
         res.status(200)
             .set('Content-Type', 'application/json')
             .send( prettyJson(data) ); // make easier to read ;)

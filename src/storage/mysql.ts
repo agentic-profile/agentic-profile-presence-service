@@ -1,23 +1,22 @@
 import {
     AgenticProfile,
     DID
-} from "@agentic-profile/common";
+} from "@agentic-profile/common/schema";
 import {
     ClientAgentSession,
     ClientAgentSessionUpdates
 } from "@agentic-profile/auth";
 
-import { mysql } from "@agentic-profile/express-common";
-const {
+import {
     queryFirstRow,
     queryResult,
     queryRows
-} = mysql;
+} from "@agentic-profile/mysql";
 
 import {
-    Storage,
+    UnifiedStore,
     VerificationMethodRecord
-} from "../models.js";
+} from "./models.js";
 import {
     EventAttendee,
     EventAttendeeUpdate,
@@ -25,7 +24,7 @@ import {
     Geocoordinates,
     LocationQuery,
     NearbyAgent
-} from "../../models.js";
+} from "../models.js";
 
 interface AgenticProfileRecord {
     profileDid: string,
@@ -33,7 +32,7 @@ interface AgenticProfileRecord {
     updated: Date
 }
 
-export class MySQLStorage implements Storage {
+export class MySQLStore implements UnifiedStore {
 
     async addVerificationMethod( method: VerificationMethodRecord ) {
         const { id, type, publicKeyJwk, privateKeyJwk } = method;
@@ -214,7 +213,7 @@ WHERE
     // Agentic Profile Cache
     //
 
-    async cacheAgenticProfile( profile: AgenticProfile ) {
+    async saveAgenticProfile( profile: AgenticProfile ) {
         const update = {
             agentic_profile: JSON.stringify(profile)
         };
@@ -222,13 +221,13 @@ WHERE
             ...update,
             profile_did: profile.id,
         };
-        await mysql.queryResult(
+        await queryResult(
             "INSERT INTO agentic_profile_cache SET ? ON DUPLICATE KEY UPDATE ?",
             [insert,update]
         );
     }
 
-    async getCachedAgenticProfile( did: DID ) {
+    async loadAgenticProfile( did: DID ) {
         const AGENTIC_PROFILE_CACHE_COLUMNS = "profile_did as profileDid,agentic_profile as agenticProfile,updated";
         const record = await queryFirstRow<AgenticProfileRecord>(
             `SELECT ${AGENTIC_PROFILE_CACHE_COLUMNS} FROM agentic_profile_cache WHERE profile_did=?`,

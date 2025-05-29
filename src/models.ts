@@ -1,4 +1,4 @@
-import { DID } from "@agentic-profile/common";
+import { DID } from "@agentic-profile/common/schema";
 
 //
 // Events
