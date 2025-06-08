@@ -7,27 +7,29 @@ import { dirname, join } from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-import { setAgentHooks } from "@agentic-profile/common";
 import { app } from "@agentic-profile/express-common";
 
 import { routes } from "./dist/routes.js";
-
-import { MySQLStorage } from "./dist/storage/mysql/database.js";
+import { MySQLStore } from "./dist/storage/mysql.js";
 
 log.setLevel( process.env.LOG_LEVEL ?? "info" );
 console.log( "log level", log.getLevel() );
 
-const port = process.env.PORT || 3003;
+/*
+const port = process.env.PORT || 3004;
 const TESTING_DID_PATH = `web:localhost%3A${port}:iam`;
 setAgentHooks({
     storage: new MySQLStorage(),
     createUserAgentDid: (uid) => `did:${process.env.AP_DID_PATH ?? TESTING_DID_PATH}:${uid}`
 });
+*/
 
 app.use("/", express.static( join(__dirname, "www"), {
     dotfiles: "allow"
 } ));
-app.use("/", routes());
+
+const store = new MySQLStore();
+app.use("/", routes( store));
 
 const seHandler = serverlessExpress({ app });
 export function handler(event, context, callback ) {

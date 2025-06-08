@@ -4,6 +4,7 @@ import {
     EdDSAPrivateJWK,
     EdDSAPublicJWK
 } from "@agentic-profile/common/schema";
+import { AgenticProfileStore } from "@agentic-profile/common";
 
 import {
     EventAttendee,
@@ -21,7 +22,7 @@ export interface VerificationMethodRecord {
     privateKeyJwk: EdDSAPrivateJWK
 }
 
-export interface UnifiedStore extends ClientAgentSessionStore {
+export interface UnifiedStore extends ClientAgentSessionStore, AgenticProfileStore {
 
     addVerificationMethod: ( method: VerificationMethodRecord )=>Promise<void>,
     listVerificationMethods: ()=>Promise<VerificationMethodRecord[]>,

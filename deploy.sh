@@ -3,12 +3,12 @@
 cd "$(dirname "$0")"
 
 echo "Building distribution..."
-yarn
-yarn build
+pnpm install
+pnpm build
 
 echo "Cleaning up mode_modules - removing non-production ones..."
-rm -rf node_modules
-yarn workspaces focus --production
+pnpm install --prod --node-linker=hoisted
+pnpm prune --production
 
 echo "Creating upload zipfile..."
 rm function.zip 

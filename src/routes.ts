@@ -17,13 +17,12 @@ import {
     EventUpdate,
     LocationUpdate
 } from "./models.js";
-import { MySQLStore } from "./storage/mysql.js";
+import { UnifiedStore } from "./storage/models.js";
 
-const store = new MySQLStore();
-const didResolver = createDidResolver({ store });
 
-export function routes() {
-    var router = express.Router();
+export function routes( store: UnifiedStore ) {
+    const didResolver = createDidResolver({ store });
+    const router = express.Router();
 
     const runningSince = new Date();
     router.get( "/status", function( req: Request, res: Response ) {
