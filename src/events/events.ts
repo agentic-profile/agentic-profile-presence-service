@@ -9,6 +9,10 @@ import {
     fetchLumaEventDetails,
     normalizeLumaUrl
 } from "./luma.js";
+import {
+    fetchEventbriteEventDetails,
+    normalizeEventbriteUrl
+} from "./eventbrite.js";
 import { UnifiedStore } from "../storage/models.js";
 
 /*
@@ -57,7 +61,7 @@ export async function saveEvent( did: DID, update: EventUpdate, store: UnifiedSt
 
 interface EventUrl {
     url: string,
-    type: "luma"
+    type: "luma" | "eventbrite"
 }
 
 function normalizeEventUrl( eventUrl: string ): EventUrl {
@@ -67,6 +71,10 @@ function normalizeEventUrl( eventUrl: string ): EventUrl {
     if( url )
         return { url, type: "luma" };
 
+    url = normalizeEventbriteUrl( parsedUrl );
+    if( url )
+        return { url, type: "eventbrite" };
+
     throw new ServerError([4],"Unrecognized event type for " + eventUrl );
 }
 
@@ -74,6 +82,9 @@ async function fetchEventDetails( url: string, type: string ) {
     log.info("fetchEventDetails", url, type );
     if( type === "luma" )
         return await fetchLumaEventDetails( url );
+
+    if( type === "eventbrite" )
+        return await fetchEventbriteEventDetails( url );
 
     throw new ServerError([4],"Uknown event type " + type );
 } 

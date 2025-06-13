@@ -47,7 +47,7 @@ CREATE TABLE event_listings(
     start_date TIMESTAMP,
     end_date TIMESTAMP,
     address JSON,
-    coords POINT NOT NULL,
+    coords POINT,
     updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
