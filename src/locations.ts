@@ -19,5 +19,7 @@ export async function saveLocation( did: DID, update: LocationUpdate, store: Uni
     if( query )
         nearby = await store.findNearbyAgents( coords, query );
 
+    console.log( `saveLocation: ${did}${JSON.stringify(update,null,4)} ${JSON.stringify(nearby,null,4)}` );
+
     return { did, coords, nearby, broadcastResults: [] };
 }
