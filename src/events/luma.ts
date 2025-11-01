@@ -13,13 +13,13 @@ import {
 
 export function normalizeLumaUrl( url: URL ): string | undefined {
     // Check it's a lu.ma URL
-    if (!/^(www\.)?lu\.ma$/.test(url.hostname))
+    if (!/^(www\.)?(lu\.ma|luma\.com)$/.test(url.hostname))
         return;
 
     // Get pathname, remove trailing slashes
     const pathname = url.pathname.replace(/\/+$/, "");
 
-    return `https://lu.ma${pathname}`;
+    return `https://luma.com${pathname}`;
 }
 
 export async function fetchLumaEventDetails( url: string ): Promise<EventListing> {

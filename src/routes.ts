@@ -18,6 +18,7 @@ import {
     LocationUpdate
 } from "./models.js";
 import { UnifiedStore } from "./storage/models.js";
+import { createPresenceRouter } from "./mcp/presence/router.js";
 
 
 export function routes( store: UnifiedStore ) {
@@ -33,6 +34,8 @@ export function routes( store: UnifiedStore ) {
             url:baseUrl(req) 
         }); 
     });
+
+    router.use( "/mcp/presence", createPresenceRouter( didResolver, store ) );
 
     router.put( "/location", asyncHandler( async (req: Request, res: Response) => {
         const agentSession = await resolveAgentSession( req, res, store, didResolver );

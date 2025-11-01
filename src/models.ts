@@ -11,7 +11,8 @@ export interface BatchEventUpdate {
 export interface EventUpdate {
     eventUrl: string,
     rsvp?: RSVP,
-    broadcast?: boolean
+    broadcast?: boolean,
+    agentDid?: DID
 }
 
 export interface EventListingUpdate {
@@ -75,6 +76,7 @@ export interface LocationUpdate {
     broadcast?: boolean
     coords: Geocoordinates
     query?: LocationQuery
+    agentDid?: DID
 }
 
 export interface Geocoordinates {
