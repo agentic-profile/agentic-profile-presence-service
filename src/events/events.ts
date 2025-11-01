@@ -86,5 +86,5 @@ async function fetchEventDetails( url: string, type: string ) {
     if( type === "eventbrite" )
         return await fetchEventbriteEventDetails( url );
 
-    throw new ServerError([4],"Uknown event type " + type );
+    throw new ServerError([4],"Unknown event type " + type );
 } 
