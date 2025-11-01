@@ -1,11 +1,12 @@
 import { JSONRPCRequest, JSONRPCResponse, JSONRPCError } from '@modelcontextprotocol/sdk/types.js';
-import { jrpcError, jrpcResult } from '../../json-rpc/index.js';
+import { jrpcError, jrpcResult, jrpcErrorAuthRequired } from '../../json-rpc/index.js';
 import { saveEvent } from '../../events/events.js';
 import { saveLocation } from '../../locations.js';
 import { UnifiedStore } from '../../storage/models.js';
 import { ClientAgentSession } from '@agentic-profile/auth';
 import { Request } from 'express';
 import { LocationUpdate, EventUpdate } from '../../models.js';
+
 
 export async function handleToolsCall(request: JSONRPCRequest, session: ClientAgentSession, req: Request, store: UnifiedStore): Promise<JSONRPCResponse | JSONRPCError> {
     const { name } = request.params || {};
@@ -23,12 +24,20 @@ export async function handleToolsCall(request: JSONRPCRequest, session: ClientAg
 
 async function handleUpdateLocation(request: JSONRPCRequest, session: ClientAgentSession, req: Request, store: UnifiedStore): Promise<JSONRPCResponse | JSONRPCError> {
     const args = request.params?.arguments as LocationUpdate;
-    const result = await saveLocation( args.agentDid ?? session.agentDid, args, store);
+    const agentDid = args.agentDid ?? session?.agentDid
+    if( !agentDid )
+        return jrpcErrorAuthRequired( request.id );
+
+    const result = await saveLocation( agentDid, args, store);
     return jrpcResult(request.id!, result);
 }
 
 async function handleUpdateEvent(request: JSONRPCRequest, session: ClientAgentSession, req: Request, store: UnifiedStore): Promise<JSONRPCResponse | JSONRPCError> {
     const args = request.params?.arguments as EventUpdate;
-    const result = await saveEvent( args.agentDid ?? session.agentDid, args, store);
+    const agentDid = args.agentDid ?? session?.agentDid
+    if( !agentDid )
+        return jrpcErrorAuthRequired( request.id );
+
+    const result = await saveEvent( agentDid, args, store);
     return jrpcResult(request.id!, result);
 }
