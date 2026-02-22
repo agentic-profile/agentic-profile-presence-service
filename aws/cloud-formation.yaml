@@ -71,10 +71,6 @@ Parameters:
     Default: ''
     Description: '(Optional) Route53 hosted zone ID for the domain (e.g. Z123...). When set with CustomDomainMode=create, creates an A record pointing the custom domain to API Gateway.'
 
-  AgenticProfilesBucketArn:
-    Type: String
-    Description: Agentic profiles bucket ARN for direct read/write access
-
   FoundationVpcId:
     Type: String
     Description: Foundation VPC ID
@@ -187,15 +183,6 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                 Resource: '*'
-        - PolicyName: S3Access
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - s3:GetObject
-                  - s3:GetObjectVersion
-                Resource: !Sub '${AgenticProfilesBucketArn}/*'
         - PolicyName: OutboundHttpAccess
           PolicyDocument:
             Version: '2012-10-17'
@@ -235,17 +222,7 @@ Resources:
                   - ec2:AssignPrivateIpAddresses
                   - ec2:UnassignPrivateIpAddresses
                 Resource: '*'
-        - PolicyName: BedrockAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Effect: Allow
-                Action:
-                  - bedrock:InvokeModel
-                  - bedrock:InvokeModelWithResponseStream
-                Resource: 
-                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-3-5-haiku-20241022-v1:0'
-                  - !Sub 'arn:aws:bedrock:${AWS::Region}::foundation-model/anthropic.claude-*'
+
   # HTTP API Gateway
   HttpApi:
     Type: AWS::ApiGatewayV2::Api
