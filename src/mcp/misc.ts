@@ -1,3 +1,4 @@
+/*
 import {
     ContentBlock,
     JSONRPCResponse,
@@ -46,5 +47,6 @@ export const DEFAULT_MCP_INITIALIZE_RESPONSE = {
         "version": "1.0.0"
     },
     "instructions": "Optional instructions for the client"
-    */
+    *
 };
+*/

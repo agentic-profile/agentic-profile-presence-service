@@ -8,15 +8,8 @@ import {
     asyncHandler,
     baseUrl,
     isAdmin,
-    resolveAgentSession
 } from "@agentic-profile/express-common";
 
-import { saveLocation } from "./locations.js";
-import { saveEvent } from "./events/events.js";
-import {
-    EventUpdate,
-    LocationUpdate
-} from "./models.js";
 import { UnifiedStore } from "./storage/models.js";
 import { createPresenceRouter } from "./mcp/presence/router.js";
 
@@ -36,30 +29,6 @@ export function routes( store: UnifiedStore ) {
     });
 
     router.use( "/mcp/presence", createPresenceRouter( didResolver, store ) );
-
-    router.put( "/location", asyncHandler( async (req: Request, res: Response) => {
-        const agentSession = await resolveAgentSession( req, res, store, didResolver );
-        if( !agentSession )
-            // A 401 has been issued with a challenge, or an auth error has been thrown
-            return;
-
-        const { agentDid } = agentSession;
-        const result = await saveLocation( agentDid, req.body as LocationUpdate, store );
-
-        res.json( result );   
-    }));
-
-    router.put( "/events", asyncHandler( async (req: Request, res: Response) => {
-        const agentSession = await resolveAgentSession( req, res, store, didResolver );
-        if( !agentSession )
-            // A 401 has been issued with a challenge, or an auth error has been thrown
-            return;
-
-        const { agentDid } = agentSession;
-        const result = await saveEvent( agentDid, req.body as EventUpdate, store );
-
-        res.json( result );   
-    }));
 
     router.get( "/storage", asyncHandler( async (req: Request, res: Response) => {
         if( !isAdmin( req ) )

@@ -1,10 +1,10 @@
 import { ClientAgentSessionStore } from "@agentic-profile/auth";
 import {
+    AgenticProfileStore,
     DID,
     EdDSAPrivateJWK,
     EdDSAPublicJWK
-} from "@agentic-profile/common/schema";
-import { AgenticProfileStore } from "@agentic-profile/common";
+} from "@agentic-profile/common";
 
 import {
     EventAttendee,
@@ -32,7 +32,6 @@ export interface UnifiedStore extends ClientAgentSessionStore, AgenticProfileSto
     findNearbyAgents: ( coords: Geocoordinates, query: LocationQuery )=>Promise<NearbyAgent[]>,
 
     updateEventAttendee: ( eventUrl: string, update: EventAttendeeUpdate )=>Promise<void>,
-    //syncAgentEvents: ( did: DID, eventUrls: string[] )=>Promise<void>,
     listEventAttendees: ( eventUrl: string )=>Promise<EventAttendee[]>,
     removeEventAttendee: ( eventUrl: string, did: DID )=>Promise<void>,
 

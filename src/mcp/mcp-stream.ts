@@ -1,3 +1,4 @@
+/*
 import { Request, Response } from 'express';
 
 // Server does not support SSE, so we return a 405
@@ -14,3 +15,4 @@ export async function handleMcpDelete(_req: Request, res: Response) {
     console.log('🔍 MCP DELETE request received');
     res.status(200).json({});
 }
+    */

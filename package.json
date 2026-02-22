@@ -1,12 +1,22 @@
 {
   "name": "agentic-profile-presence-service",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Accepts presence notifications and signals to agents when they are nearby",
   "main": "index.js",
   "scripts": {
     "dev": "npx ts-node-dev --respawn --transpile-only index.local.js",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+
+    "cloud:zip": "./aws/zip-function.sh",
+    "cloud:up": "./aws/cloud-up.sh --stage=staging",
+    "cloud:up:prod": "./aws/cloud-up.sh --stage=prod",
+    "cloud:update": "./aws/cloud-update.sh --stage=staging",
+    "cloud:update:prod": "./aws/cloud-update.sh --stage=prod",
+    "cloud:down": "./aws/cloud-down.sh --stage=staging",
+    "cloud:down:prod": "./aws/cloud-down.sh --stage=prod",
+    "cloud:results": "node aws/write-formation-results.js --stage=staging",
+    "cloud:results:prod": "node aws/write-formation-results.js --stage=prod"
   },
   "type": "module",
   "repository": {
@@ -20,21 +30,22 @@
   },
   "homepage": "https://github.com/agentic-profile/agentic-profile-presence-service#readme",
   "dependencies": {
-    "@agentic-profile/auth": "^0.6.2",
-    "@agentic-profile/common": "^0.6.0",
-    "@agentic-profile/express-common": "^0.6.0",
+    "@agentic-profile/auth": "^0.7.0",
+    "@agentic-profile/common": "^0.7.0",
+    "@agentic-profile/a2a-mcp-express": "^0.7.1",
+    "@agentic-profile/express-common": "^0.7.0",
     "@agentic-profile/mysql": "^0.2.0",
     "@codegenie/serverless-express": "^4.16.0",
-    "@modelcontextprotocol/sdk": "^1.20.2",
+    "@modelcontextprotocol/sdk": "^1.26.0",
     "did-resolver": "^4.1.0",
     "dotenv": "^16.5.0",
-    "express": "^4.21.1",
+    "express": "^5.2.1",
     "jsdom": "^26.1.0",
     "loglevel": "^1.9.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
+    "@types/express": "^5.0.6",
     "@types/jsdom": "^21.1.7",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.14.1",

@@ -1,4 +1,4 @@
-import { DID } from "@agentic-profile/common/schema";
+import { DID } from "@agentic-profile/common";
 
 //
 // Events
@@ -11,8 +11,7 @@ export interface BatchEventUpdate {
 export interface EventUpdate {
     eventUrl: string,
     rsvp?: RSVP,
-    broadcast?: boolean,
-    agentDid?: DID
+    broadcast?: boolean
 }
 
 export interface EventListingUpdate {

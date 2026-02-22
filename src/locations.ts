@@ -1,8 +1,6 @@
 import { 
-    DID
-} from "@agentic-profile/common/schema";
-import { 
-    pruneFragmentId
+    DID,
+    parseDid
 } from "@agentic-profile/common";
 import {
     LocationUpdate,
@@ -11,7 +9,7 @@ import {
 import { UnifiedStore } from "./storage/models.js";
 
 export async function saveLocation( did: DID, update: LocationUpdate, store: UnifiedStore ) {
-    ({documentId: did} = pruneFragmentId( did ));
+    did = parseDid( did ).did;
     const { coords, query } = update;
     await store.updateAgentLocation( did, coords );
 

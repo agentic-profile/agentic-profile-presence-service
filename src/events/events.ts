@@ -1,5 +1,4 @@
-import { removeFragmentId } from "@agentic-profile/common";
-import { DID } from "@agentic-profile/common/schema";
+import { parseDid, DID } from "@agentic-profile/common";
 import { ServerError } from "@agentic-profile/express-common";
 import log from "loglevel";
 
@@ -15,32 +14,8 @@ import {
 } from "./eventbrite.js";
 import { UnifiedStore } from "../storage/models.js";
 
-/*
-export async function saveEvents( did: DID, update: BatchEventUpdate ) {
-    did = removeFragmentId( did );
-
-    const { eventUrls: syncUrls } = update;
-    if( !syncUrls )
-        throw new ServerError([4],"Missing required 'eventUrls' property");
-
-    const warnings = [];
-    const events = [];
-    for( const url of syncUrls ) {
-        try {
-            const normalizedUrl = normalizeEventUrl( url );
-            eventUrls.push( normalizedUrl );
-        } catch( err ) {
-            warnings.push( `Failed to add event url ${url}: ${err}` );
-        }
-    }
-
-    await storage().syncAgentEvents( did, eventUrls );
-
-    return { did, eventUrls, warnings, broadcastResults: [] };
-}*/
-
 export async function saveEvent( did: DID, update: EventUpdate, store: UnifiedStore ) {
-    did = removeFragmentId( did );
+    did = parseDid( did ).did;
     log.info("saveEvent", did, update );
     const { eventUrl, rsvp /*, broadcast*/ } = update;
 

@@ -1,6 +1,6 @@
 export const MCP_TOOLS = [
     {
-        name: 'update-location',
+        name: 'update_location',
         description: 'Update geolocation or event interest or attendance',
         inputSchema: {
             type: 'object',
@@ -32,17 +32,13 @@ export const MCP_TOOLS = [
                             description: 'The maximum age in minutes'
                         }
                     }
-                },
-                agentDid: {
-                    type: 'string',
-                    description: 'The agent DID'
                 }
             },
             required: ['coords']
         }
     },
     {
-        name: 'update-event',
+        name: 'update_event_rsvp',
         description: 'Update event interest or attendance',
         inputSchema: {
             type: 'object',
@@ -55,10 +51,6 @@ export const MCP_TOOLS = [
                     type: 'string',
                     description: 'The RSVP status',
                     enum: ['yes', 'no', 'maybe']
-                },
-                agentDid: {
-                    type: 'string',
-                    description: 'The agent DID'
                 }
             },
             required: ['eventUrl']
