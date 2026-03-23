@@ -4,16 +4,13 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@agentic-profile/a2a-mcp-express': link:../../../Library/pnpm/global/5/node_modules/@agentic-profile/a2a-mcp-express
-
 importers:
 
   .:
     dependencies:
       '@agentic-profile/a2a-mcp-express':
-        specifier: link:../../../Library/pnpm/global/5/node_modules/@agentic-profile/a2a-mcp-express
-        version: link:../../../Library/pnpm/global/5/node_modules/@agentic-profile/a2a-mcp-express
+        specifier: ^0.7.2
+        version: 0.7.2(@modelcontextprotocol/sdk@1.26.0(zod@3.25.76))(express@5.2.1)
       '@agentic-profile/auth':
         specifier: ^0.7.0
         version: 0.7.0
@@ -32,6 +29,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1.26.0
         version: 1.26.0(zod@3.25.76)
+      ajv:
+        specifier: '>=8.18.0'
+        version: 8.18.0
       did-resolver:
         specifier: ^4.1.0
         version: 4.1.0
@@ -41,12 +41,18 @@ importers:
       express:
         specifier: ^5.2.1
         version: 5.2.1
+      hono:
+        specifier: '>=4.11.10'
+        version: 4.12.1
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
       loglevel:
         specifier: ^1.9.2
         version: 1.9.2
+      qs:
+        specifier: '>=6.14.2'
+        version: 6.15.0
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -63,6 +69,9 @@ importers:
       '@types/node':
         specifier: ^22.14.1
         version: 22.15.26
+      diff:
+        specifier: '>=4.0.4'
+        version: 8.0.3
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@22.15.26)(typescript@5.8.3)
@@ -71,6 +80,20 @@ importers:
         version: 5.8.3
 
 packages:
+
+  '@agentic-profile/a2a-mcp-express@0.7.2':
+    resolution: {integrity: sha512-ahHg54b338juyxEcTp1HpQP9FE5GijMddHVWNsxk0igMdwUswc4aorq6dKnql0MPvhA6rKqTAymvTdzVU7xjuA==}
+    peerDependencies:
+      '@a2a-js/sdk': ^0.3.10
+      '@modelcontextprotocol/sdk': ^1.26.0
+      express: ^5.2.1
+    peerDependenciesMeta:
+      '@a2a-js/sdk':
+        optional: true
+      '@modelcontextprotocol/sdk':
+        optional: true
+      express:
+        optional: true
 
   '@agentic-profile/auth@0.7.0':
     resolution: {integrity: sha512-BU8PNR59msPddq/Fk/bTe8yK1Ae3hxz3Agx7qd/vDZ0S4xdhKCXZ34YV8X4npbn1ViRlkTPUTN7s4eXEoj50Ew==}
@@ -238,8 +261,8 @@ packages:
       ajv:
         optional: true
 
-  ajv@8.17.1:
-    resolution: {integrity: sha512-B/gBuNg5SiMTrPkC+A2+cW0RszwxYmn6VYxB/inlBStS5nx6xHIt/ehKRhIMhqusl7a8LjQoZnjCs5vhwxOQ1g==}
+  ajv@8.18.0:
+    resolution: {integrity: sha512-PlXPeEWMXMZ7sPYOHqmDyCJzcfNrUr3fGNKtezX14ykXOEIvyK81d+qydx89KY5O71FKMPaQ2vBfBFI5NHR63A==}
 
   arg@4.1.3:
     resolution: {integrity: sha512-58S9QDqG0Xx27YwPSt9fJxivjYl432YCwfDMfZ+71RAqUrZef7LrKQZ3LHLOwCS4FLNBplP533Zx895SeOCHvA==}
@@ -361,8 +384,12 @@ packages:
   did-resolver@4.1.0:
     resolution: {integrity: sha512-S6fWHvCXkZg2IhS4RcVHxwuyVejPR7c+a4Go0xbQ9ps5kILa8viiYQgrM4gfTyeTjJ0ekgJH9gk/BawTpmkbZA==}
 
-  diff@4.0.2:
-    resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
+  diff@4.0.4:
+    resolution: {integrity: sha512-X07nttJQkwkfKfvTPG/KSnE2OMdcUCao6+eXF3wmnIQRn2aPAHH3VxDbDOdegkd6JbPsXqShpvEOHfAT+nCNwQ==}
+    engines: {node: '>=0.3.1'}
+
+  diff@8.0.3:
+    resolution: {integrity: sha512-qejHi7bcSD4hQAZE0tNAawRK1ZtafHDmMTMkrrIGgSLl7hTnQHmKCeB45xAcbfTqK2zowkM3j3bHt/4b/ARbYQ==}
     engines: {node: '>=0.3.1'}
 
   dotenv@16.5.0:
@@ -481,8 +508,8 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hono@4.11.9:
-    resolution: {integrity: sha512-Eaw2YTGM6WOxA6CXbckaEvslr2Ne4NFsKrvc0v97JD5awbmeBLO5w9Ho9L9kmKonrwF9RJlW6BxT1PVv/agBHQ==}
+  hono@4.12.1:
+    resolution: {integrity: sha512-hi9afu8g0lfJVLolxElAZGANCTTl6bewIdsRNhaywfP9K8BPf++F2z6OLrYGIinUwpRKzbZHMhPwvc0ZEpAwGw==}
     engines: {node: '>=16.9.0'}
 
   html-encoding-sniffer@4.0.0:
@@ -704,8 +731,8 @@ packages:
     resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
     engines: {node: '>=0.6'}
 
-  qs@6.14.1:
-    resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
+  qs@6.15.0:
+    resolution: {integrity: sha512-mAZTtNCeetKMH+pSjrb76NAM8V9a05I9aBZOHztWy/UqcJdQYNsf59vrRKWnojAT9Y+GbIvoTBC++CPHqpDBhQ==}
     engines: {node: '>=0.6'}
 
   range-parser@1.2.1:
@@ -858,6 +885,10 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
+    hasBin: true
+
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
 
@@ -926,6 +957,17 @@ packages:
 
 snapshots:
 
+  '@agentic-profile/a2a-mcp-express@0.7.2(@modelcontextprotocol/sdk@1.26.0(zod@3.25.76))(express@5.2.1)':
+    dependencies:
+      '@agentic-profile/auth': 0.7.0
+      '@agentic-profile/common': 0.7.0
+      did-resolver: 4.1.0
+      loglevel: 1.9.2
+      uuid: 13.0.0
+    optionalDependencies:
+      '@modelcontextprotocol/sdk': 1.26.0(zod@3.25.76)
+      express: 5.2.1
+
   '@agentic-profile/auth@0.7.0':
     dependencies:
       '@agentic-profile/common': 0.7.0
@@ -987,9 +1029,9 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
-  '@hono/node-server@1.19.9(hono@4.11.9)':
+  '@hono/node-server@1.19.9(hono@4.12.1)':
     dependencies:
-      hono: 4.11.9
+      hono: 4.12.1
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
@@ -1002,9 +1044,9 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.26.0(zod@3.25.76)':
     dependencies:
-      '@hono/node-server': 1.19.9(hono@4.11.9)
-      ajv: 8.17.1
-      ajv-formats: 3.0.1(ajv@8.17.1)
+      '@hono/node-server': 1.19.9(hono@4.12.1)
+      ajv: 8.18.0
+      ajv-formats: 3.0.1(ajv@8.18.0)
       content-type: 1.0.5
       cors: 2.8.5
       cross-spawn: 7.0.6
@@ -1012,7 +1054,7 @@ snapshots:
       eventsource-parser: 3.0.6
       express: 5.2.1
       express-rate-limit: 8.2.1(express@5.2.1)
-      hono: 4.11.9
+      hono: 4.12.1
       jose: 6.1.3
       json-schema-typed: 8.0.2
       pkce-challenge: 5.0.0
@@ -1110,11 +1152,11 @@ snapshots:
 
   agent-base@7.1.3: {}
 
-  ajv-formats@3.0.1(ajv@8.17.1):
+  ajv-formats@3.0.1(ajv@8.18.0):
     optionalDependencies:
-      ajv: 8.17.1
+      ajv: 8.18.0
 
-  ajv@8.17.1:
+  ajv@8.18.0:
     dependencies:
       fast-deep-equal: 3.1.3
       fast-uri: 3.1.0
@@ -1156,7 +1198,7 @@ snapshots:
       http-errors: 2.0.0
       iconv-lite: 0.7.0
       on-finished: 2.4.1
-      qs: 6.14.1
+      qs: 6.15.0
       raw-body: 3.0.1
       type-is: 2.0.1
     transitivePeerDependencies:
@@ -1235,7 +1277,9 @@ snapshots:
 
   did-resolver@4.1.0: {}
 
-  diff@4.0.2: {}
+  diff@4.0.4: {}
+
+  diff@8.0.3: {}
 
   dotenv@16.5.0: {}
 
@@ -1334,7 +1378,7 @@ snapshots:
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.7
-      qs: 6.14.1
+      qs: 6.15.0
       range-parser: 1.2.1
       router: 2.2.0
       send: 1.2.0
@@ -1410,7 +1454,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  hono@4.11.9: {}
+  hono@4.12.1: {}
 
   html-encoding-sniffer@4.0.0:
     dependencies:
@@ -1614,7 +1658,7 @@ snapshots:
     dependencies:
       side-channel: 1.1.0
 
-  qs@6.14.1:
+  qs@6.15.0:
     dependencies:
       side-channel: 1.1.0
 
@@ -1782,7 +1826,7 @@ snapshots:
       acorn-walk: 8.3.4
       arg: 4.1.3
       create-require: 1.1.1
-      diff: 4.0.2
+      diff: 4.0.4
       make-error: 1.3.6
       typescript: 5.8.3
       v8-compile-cache-lib: 3.0.1
@@ -1806,6 +1850,8 @@ snapshots:
   unpipe@1.0.0: {}
 
   utils-merge@1.0.1: {}
+
+  uuid@13.0.0: {}
 
   v8-compile-cache-lib@3.0.1: {}
 

@@ -1,4 +1,5 @@
 .DS_Store
+index.mjs
 function.zip
 google-keys.json
 keyring.json

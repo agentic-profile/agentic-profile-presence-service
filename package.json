@@ -7,7 +7,6 @@
     "dev": "npx ts-node-dev --respawn --transpile-only index.local.js",
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-
     "cloud:zip": "./aws/zip-function.sh",
     "cloud:up": "./aws/cloud-up.sh --stage=staging",
     "cloud:up:prod": "./aws/cloud-up.sh --stage=prod",
@@ -32,16 +31,19 @@
   "dependencies": {
     "@agentic-profile/auth": "^0.7.0",
     "@agentic-profile/common": "^0.7.0",
-    "@agentic-profile/a2a-mcp-express": "^0.7.1",
+    "@agentic-profile/a2a-mcp-express": "^0.7.2",
     "@agentic-profile/express-common": "^0.7.0",
     "@agentic-profile/mysql": "^0.2.0",
     "@codegenie/serverless-express": "^4.16.0",
     "@modelcontextprotocol/sdk": "^1.26.0",
+    "ajv": ">=8.18.0",
     "did-resolver": "^4.1.0",
     "dotenv": "^16.5.0",
     "express": "^5.2.1",
+    "hono": ">=4.11.10",
     "jsdom": "^26.1.0",
-    "loglevel": "^1.9.2"
+    "loglevel": "^1.9.2",
+    "qs": ">=6.14.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -49,6 +51,7 @@
     "@types/jsdom": "^21.1.7",
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.14.1",
+    "diff": ">=4.0.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   },

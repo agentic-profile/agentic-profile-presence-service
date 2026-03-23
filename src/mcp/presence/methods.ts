@@ -1,4 +1,5 @@
 import {
+    AGENTIC_AUTH_REQUIRED_JSON_RPC_CODE,
     jrpcError,
     JsonRpcRequest,
     JsonRpcRequestContext,
@@ -18,16 +19,26 @@ export function createToolsCallHandler(store: UnifiedStore) {
 
     return async (request: JsonRpcRequest, context: JsonRpcRequestContext): Promise<JsonRpcResponse> => {
         const { name } = request.params || {};
-        log.debug('🔍 handleToolsCall', name, request, context);
+        log.info('handleToolsCall', name, request);
         
-        const session = context.session!;
-        switch (name) {
-            case 'update_location':
-                return await updateLocation(request,session);
-            case 'update_event_rsvp':
-                return await updateEvent(request,session);
-            default:
-                return jrpcError(request.id!, -32601, `Tool ${name} not found`);
+        try {
+            const session = context.session;
+            if (!session) {
+                log.info('Requesting authentication', context);
+                return jrpcError(request.id!, AGENTIC_AUTH_REQUIRED_JSON_RPC_CODE, 'Please authenticate');
+            }
+
+            switch (name) {
+                case 'update_location':
+                    return await updateLocation(request, session);
+                case 'update_event_rsvp':
+                    return await updateEvent(request, session);
+                default:
+                    return jrpcError(request.id!, -32601, `Tool ${name} not found`);
+            }
+        } catch (error: any) {
+            log.error('💥 Error in handleToolsCall:', error.message, error.stack);
+            return jrpcError(request.id!, -32603, `Internal error: ${error.message}`);
         }
     }
 

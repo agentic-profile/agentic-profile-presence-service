@@ -15,21 +15,12 @@ import { MySQLStore } from "./dist/storage/mysql.js";
 log.setLevel( process.env.LOG_LEVEL ?? "info" );
 console.log( "log level", log.getLevel() );
 
-/*
-const port = process.env.PORT || 3004;
-const TESTING_DID_PATH = `web:localhost%3A${port}:iam`;
-setAgentHooks({
-    storage: new MySQLStorage(),
-    createUserAgentDid: (uid) => `did:${process.env.AP_DID_PATH ?? TESTING_DID_PATH}:${uid}`
-});
-*/
-
 app.use("/", express.static( join(__dirname, "www"), {
     dotfiles: "allow"
 } ));
 
 const store = new MySQLStore();
-app.use("/", routes( store));
+app.use("/", routes( store ));
 
 const seHandler = serverlessExpress({ app });
 export function handler(event, context, callback ) {

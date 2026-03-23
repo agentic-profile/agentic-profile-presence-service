@@ -40,5 +40,13 @@ export function routes( store: UnifiedStore ) {
             .send( prettyJson(data) ); // make easier to read ;)
     }));
 
+    router.use((err: any, req: Request, res: Response, next: any) => {
+        console.error("💥 Unhandled error:", err.message, err.stack);
+        res.status(500).json({
+            error: "Internal Server Error",
+            message: err.message
+        });
+    });
+
     return router;
 }

@@ -96,7 +96,7 @@ WHERE
             params.push(maxAge);
         }
 
-        console.log(sql,params);
+        //console.log(sql,params);
         const rows = await queryRows(sql, params);
         return rows.map(({ did, distance, updated }: any) => ({ did, distance, updated }));
     }
